@@ -40,3 +40,11 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 !.env.example
+
+# azure functions (api/)
+api/node_modules/
+api/dist/
+api/local.settings.json
+
+# static web apps cli
+.swa/

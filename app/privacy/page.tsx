@@ -8,14 +8,14 @@ const description = "What tinig labs collects when you join the waitlist or subs
 export const metadata: Metadata = {
   title: `${title} | tinig labs`,
   description,
-  alternates: { canonical: "/privacy" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/privacy" },
+  alternates: { canonical: "/privacy/" },
+  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/privacy/" },
   twitter: { card: "summary", title, description },
 };
 
 const CONTACT = "waitlist@tiniglabs.digital";
 
-// Keep in sync with app/actions.ts and app/_server/rate-limit.ts
+// Keep in sync with api/src/signup.ts and api/src/rate-limit.ts
 const DATA = [
   {
     what: "Email address and role",
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
       <Section id="providers" title="Who else handles it">
         <P>We use Microsoft services to run the site, so Microsoft processes data on our behalf:</P>
         <List>
-          <li>Azure App Service hosts the website.</li>
+          <li>Azure Static Web Apps hosts the website and runs the signup forms.</li>
           <li>Azure Communication Services sends our emails.</li>
           <li>Microsoft 365 hosts the mailboxes where signups arrive.</li>
         </List>
@@ -128,7 +128,7 @@ export default function PrivacyPage() {
       <Section id="security" title="How we protect it">
         <P>
           The site is served only over HTTPS. Signups are kept in mailboxes that only the
-          developer can open, and service keys are kept in Azure Key Vault, not in the code.
+          developer can open, and service keys are stored encrypted in Azure, not in the code.
         </P>
       </Section>
 

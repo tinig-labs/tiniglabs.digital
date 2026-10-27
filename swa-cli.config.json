@@ -1,0 +1,12 @@
+{
+  "$schema": "https://aka.ms/azure/static-web-apps-cli/schema",
+  "configurations": {
+    "tiniglabs": {
+      "appLocation": ".",
+      "outputLocation": "out",
+      "apiLocation": "api",
+      "appDevserverUrl": "http://localhost:3000",
+      "run": "npm run dev"
+    }
+  }
+}

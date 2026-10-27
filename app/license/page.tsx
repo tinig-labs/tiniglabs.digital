@@ -11,8 +11,8 @@ const description =
 export const metadata: Metadata = {
   title: `${title} | tinig labs`,
   description,
-  alternates: { canonical: "/license" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/license" },
+  alternates: { canonical: "/license/" },
+  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/license/" },
   twitter: { card: "summary", title, description },
 };
 

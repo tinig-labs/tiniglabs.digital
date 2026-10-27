@@ -1,0 +1,61 @@
+# Builds the static site (out/) and the Functions API (api/) and deploys both
+# to Azure Static Web Apps. Pull requests are not deployed, so preview
+# environments never get the production email settings.
+#
+# One-time setup (see DEVELOPMENT.md, "Deploy to Azure Static Web Apps"):
+#   Secret  AZURE_STATIC_WEB_APPS_API_TOKEN  (the Static Web App's deployment token)
+name: Deploy to Azure Static Web Apps
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: azure-static-web-apps-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            api/package-lock.json
+
+      - name: Build site
+        run: |
+          npm ci
+          npm audit --omit=dev --audit-level=high
+          npm run lint
+          npm run typecheck
+          npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      - name: Build API
+        working-directory: api
+        run: |
+          npm ci
+          npm audit --omit=dev --audit-level=high
+          npm run build
+          npm prune --omit=dev
+
+      - uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: out
+          api_location: api
+          skip_app_build: true
+          skip_api_build: true

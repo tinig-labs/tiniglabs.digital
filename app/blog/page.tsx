@@ -9,8 +9,8 @@ const description = "Notes from an independent lab building open Filipino AI. Co
 export const metadata: Metadata = {
   title,
   description,
-  alternates: { canonical: "/blog" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/blog" },
+  alternates: { canonical: "/blog/" },
+  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/blog/" },
   twitter: { card: "summary", title, description },
 };
 

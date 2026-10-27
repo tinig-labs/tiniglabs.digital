@@ -5,17 +5,16 @@
   "license": "FSL-1.1-ALv2",
   "scripts": {
     "dev": "next dev",
-    "build": "next build && node scripts/prepare-standalone.mjs",
-    "start": "node .next/standalone/server.js",
+    "build": "next build",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "build:api": "npm --prefix api run build",
+    "dev:swa": "npm run build:api && npx --yes @azure/static-web-apps-cli@2.1.0 start tiniglabs"
   },
   "dependencies": {
-    "@azure/communication-email": "^1.1.0",
     "next": "16.4.3",
     "react": "19.3.0",
-    "react-dom": "19.3.0",
-    "server-only": "^0.0.1"
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@tailwindcss/turbopack": "^4",

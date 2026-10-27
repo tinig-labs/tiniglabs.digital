@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import { focusRing } from "../_components/brand";
 import { HoneypotField } from "../_components/honeypot-field";
-import { subscribeToBlog } from "../actions";
+import { postSignup } from "../_components/signup";
 
 type Status = "idle" | "submitting" | "success" | "error";
 
@@ -25,7 +25,7 @@ export function SubscribeForm() {
     setError("");
     setStatus("submitting");
     try {
-      const res = await subscribeToBlog({ email: clean, website });
+      const res = await postSignup("subscribe", { email: clean, website });
       if (!res.ok) return fail(res.error);
       setStatus("success");
     } catch {

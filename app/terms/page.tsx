@@ -8,8 +8,8 @@ const description = "The terms for using the tinig labs website, waitlist, and b
 export const metadata: Metadata = {
   title: `${title} | tinig labs`,
   description,
-  alternates: { canonical: "/terms" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/terms" },
+  alternates: { canonical: "/terms/" },
+  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/terms/" },
   twitter: { card: "summary", title, description },
 };
 

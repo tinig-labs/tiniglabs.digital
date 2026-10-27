@@ -22,7 +22,8 @@
 <p align="center">
   <a href="LICENSE.md"><img alt="License: FSL-1.1-ALv2" src="https://img.shields.io/badge/license-FSL--1.1--ALv2-1F6B4F"></a>
   <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-13261F?logo=nextdotjs&logoColor=white">
-  <img alt="Node.js 20.9 or later" src="https://img.shields.io/badge/node-%E2%89%A520.9-1F6B4F?logo=nodedotjs&logoColor=white">
+  <img alt="Node.js 22" src="https://img.shields.io/badge/node-22-1F6B4F?logo=nodedotjs&logoColor=white">
+  <img alt="Azure Static Web Apps" src="https://img.shields.io/badge/Azure-Static%20Web%20Apps-13261F">
 </p>
 
 ---
@@ -39,7 +40,7 @@ The lab's first project is speech recognition for Filipino voices that today's A
 | `/blog` | talâ, the blog. Coming soon, with an email signup for the first post. |
 | `/license`, `/terms`, `/privacy` | License, Terms of Service, and Privacy Policy |
 
-The site has no cookies or analytics. Signups are sent by email through Azure Communication Services, so there's no database.
+The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which sends the signup by email through Azure Communication Services, so there's no database.
 
 ## Quick start
 
@@ -48,11 +49,11 @@ npm install
 npm run dev     # http://localhost:3000
 ```
 
-You need Node.js 20.9 or later. The signup forms need an Azure Communication Services connection string to send email; everything else works without one.
+You need Node.js 22. `npm run dev` serves every page. To run the signup API as well, see [Run it locally](DEVELOPMENT.md#run-it-locally).
 
 ## Documentation
 
-- [DEVELOPMENT.md](DEVELOPMENT.md): project layout, how signups work, environment variables, and deploying to Azure
+- [DEVELOPMENT.md](DEVELOPMENT.md): project layout, how signups work, settings, and deploying to Azure Static Web Apps
 - [CONTRIBUTING.md](CONTRIBUTING.md): how to report bugs and security problems, and how to propose changes
 - [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md): the software, typefaces, and services the site is built on
 

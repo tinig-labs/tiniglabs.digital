@@ -1,4 +1,3 @@
-import "server-only";
 import { EmailClient } from "@azure/communication-email";
 
 // Mailboxes on the Azure Communication Services verified domain. Each one sends

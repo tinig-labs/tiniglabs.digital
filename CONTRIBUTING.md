@@ -37,6 +37,7 @@ Don't open a public issue. Report it privately through the repository's **Securi
    npm run lint
    npm run typecheck
    npm run build
+   npm run build:api
    ```
 
 5. Open a pull request that says what changed and why. For visual changes, add screenshots at phone and desktop widths.

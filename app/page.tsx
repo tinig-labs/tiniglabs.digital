@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import { Brand, focusRing } from "./_components/brand";
 import { HoneypotField } from "./_components/honeypot-field";
-import { joinWaitlist, type Role } from "./actions";
+import { postSignup, type Role } from "./_components/signup";
 
 /* ------------------------------------------------------------------ */
 /* Hero: said / meant                                                  */
@@ -123,7 +123,7 @@ function WaitlistForm() {
     setError("");
     setStatus("submitting");
     try {
-      const res = await joinWaitlist({ email: clean, role, website });
+      const res = await postSignup("waitlist", { email: clean, role, website });
       if (!res.ok) return fail(res.error);
       setStatus("success");
     } catch {

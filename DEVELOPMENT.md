@@ -4,18 +4,28 @@ How the tinig labs website is built, run, and deployed. For how to propose chang
 
 ## Requirements
 
-- Node.js 20.9 or later (production runs Node 22)
+- Node.js 22 (20.9 or later works for the site; the API runs on Node 22)
 - npm
+- To run the signup API locally: [Azure Functions Core Tools v4](https://learn.microsoft.com/azure/azure-functions/functions-run-local)
 
 ## Run it locally
 
+Pages only:
+
 ```bash
 npm install
-cp .env.example .env.local   # optional: fill in ACS_CONNECTION_STRING to send real email
 npm run dev                  # http://localhost:3000
 ```
 
-Without `ACS_CONNECTION_STRING`, every page works but both signup forms return "Couldn't sign you up right now." That's expected; you only need it to test email.
+The signup forms post to `/api/*`, which `next dev` doesn't serve, so they show "Couldn't sign you up right now." To run the site and the API together through the Static Web Apps CLI:
+
+```bash
+npm install --prefix api
+cp api/local.settings.example.json api/local.settings.json   # fill in ACS_CONNECTION_STRING
+npm run dev:swa              # http://localhost:4280
+```
+
+Without a real `ACS_CONNECTION_STRING`, the API still runs and the forms show the same error, which is the expected behavior when email can't be sent.
 
 ## Checks
 
@@ -25,17 +35,19 @@ Run these before opening a pull request. CI runs the same ones before every depl
 npm run lint
 npm run typecheck
 npm run build
+npm run build:api
 npm audit --omit=dev --audit-level=high
 ```
 
 ## Stack
 
-- [Next.js 16](https://nextjs.org) App Router with Cache Components, React 19, TypeScript
+- [Next.js 16](https://nextjs.org) App Router, exported as static files (`output: "export"`), React 19, TypeScript
 - [Tailwind CSS 4](https://tailwindcss.com)
+- [Azure Functions](https://learn.microsoft.com/azure/azure-functions/) (Node.js v4 programming model) for the signup API
 - [Azure Communication Services](https://learn.microsoft.com/azure/communication-services/) for signup email
-- Azure App Service (Linux, Node 22) for hosting
+- [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/) for hosting the site and the API together
 
-Next.js 16 changed many APIs. Before writing Next code, read the matching guide in `node_modules/next/dist/docs/` (see [AGENTS.md](AGENTS.md)).
+Next.js 16 changed many APIs. Before writing Next code, read the matching guide in `node_modules/next/dist/docs/` (see [AGENTS.md](AGENTS.md)). The site is a static export, so pages can't use server actions, cookies, request headers, rewrites, or `next.config` headers. Anything that needs a server goes in `api/`.
 
 ## Project layout
 
@@ -44,13 +56,17 @@ app/
   page.tsx               Home page, with the Said/Meant demo and the waitlist form
   blog/                  talâ, the blog (coming soon) and its subscribe form
   license/ terms/ privacy/   Legal pages; /license renders LICENSE.md at build time
-  actions.ts             Server actions behind both signup forms
-  _components/           Header, footer, brand wordmark, legal page shell
-  _server/               Server-only code: email sending and rate limiting
-  api/health/            Health check for App Service
+  _components/           Header, footer, brand wordmark, legal page shell, signup client
   robots.ts sitemap.ts not-found.tsx
-public/logo.svg          The tinig labs mark
-scripts/prepare-standalone.mjs   Copies static assets into the standalone build
+api/                     Azure Functions app, deployed as the Static Web App's API
+  src/functions/signup.ts    POST /api/waitlist and POST /api/subscribe
+  src/signup.ts              Validation and the emails each form sends
+  src/mailer.ts              Azure Communication Services client
+  src/rate-limit.ts          Per-IP attempt limit
+public/
+  staticwebapp.config.json   Security headers, 404 page, caching, API runtime
+  logo.svg banner.svg banner-dark.svg
+swa-cli.config.json      Local Static Web Apps CLI setup used by npm run dev:swa
 ```
 
 ## Design conventions
@@ -62,43 +78,44 @@ scripts/prepare-standalone.mjs   Copies static assets into the standalone build
 
 ## How signups work
 
-Both forms call server actions in `app/actions.ts`, which send two emails through ACS:
+Both forms send JSON to the API with `postSignup` in `app/_components/signup.ts`:
 
-| Form | Sent from | Record copy to | Confirmation to |
-|---|---|---|---|
-| Waitlist (home page) | `waitlist@tiniglabs.digital` | `waitlist@tiniglabs.digital` | the person signing up |
-| Blog subscribe (`/blog`) | `subscribe@tiniglabs.digital` | `subscribe@tiniglabs.digital` | the person signing up |
+| Form | Endpoint | Sent from | Record copy to | Confirmation to |
+|---|---|---|---|---|
+| Waitlist (home page) | `POST /api/waitlist` | `waitlist@tiniglabs.digital` | `waitlist@tiniglabs.digital` | the person signing up |
+| Blog subscribe (`/blog/`) | `POST /api/subscribe` | `subscribe@tiniglabs.digital` | `subscribe@tiniglabs.digital` | the person signing up |
+
+The API answers `{ "ok": true }`, or `{ "ok": false, "error": "..." }` with status 400 (bad input), 429 (too many attempts), or 503 (email couldn't be sent). The error text is written for people and is shown in the form as is.
 
 The record copy is the signup list. Its subject line is `Waitlist: <role>, <email>` or `Blog subscriber: <email>`, and its Reply-To is the subscriber. A form only reports success once ACS accepts the record copy. If only the confirmation fails, the error is logged and the signup still counts.
 
-The actions validate the email on the server, drop submissions that fill a hidden honeypot field, and limit each IP to 5 attempts per 10 minutes per form. The limit is kept in memory, so each instance counts separately.
+The API validates the email, drops submissions that fill a hidden honeypot field, and limits each IP to 5 attempts per 10 minutes per form. The limit is kept in memory, so each Functions instance counts separately.
 
 If you change what the forms collect or how long anything is kept, update the table in `app/privacy/page.tsx` in the same pull request.
 
-## Build and run in production
+## Build
 
 ```bash
-npm run build      # next build, then copies public/ and .next/static into .next/standalone
-npm start          # node .next/standalone/server.js
+npm run build       # static site in out/
+npm run build:api   # API in api/dist/
 ```
 
-`.next/standalone` is self-contained, so that folder is all a server needs.
+To preview the static build without the API, serve `out/` with any static file server, for example `npx serve out`.
 
-### Environment variables
+### Settings
 
-| Name | Required | Default | Purpose |
-|---|---|---|---|
-| `ACS_CONNECTION_STRING` | yes, in production | | ACS resource connection string. Keep it in Key Vault. |
-| `WAITLIST_EMAIL` | no | `waitlist@tiniglabs.digital` | Waitlist sender and record inbox |
-| `BLOG_EMAIL` | no | `subscribe@tiniglabs.digital` | Blog sender and record inbox |
-| `NEXT_PUBLIC_SITE_URL` | no | `https://tiniglabs.digital` | Canonical origin for metadata, `robots.txt`, and `sitemap.xml`. Read at build time. |
-| `PORT` / `HOSTNAME` | no | `3000` / `0.0.0.0` | Azure sets `PORT`. Set `HOSTNAME` in the startup command (below). |
+| Name | Where | Required | Default | Purpose |
+|---|---|---|---|---|
+| `NEXT_PUBLIC_SITE_URL` | `.env.local` or the CI environment, at build time | no | `https://tiniglabs.digital` | Canonical origin for metadata, `robots.txt`, and `sitemap.xml` |
+| `ACS_CONNECTION_STRING` | Static Web App environment variables; `api/local.settings.json` locally | yes | | ACS resource connection string |
+| `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Waitlist sender and record inbox |
+| `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Blog sender and record inbox |
 
-Never commit real values. `.env*` files are gitignored, except `.env.example`.
+Never commit real values. `.env*` files (except `.env.example`) and `api/local.settings.json` are gitignored.
 
-## Deploy to Azure App Service
+## Deploy to Azure Static Web Apps
 
-`.github/workflows/azure-webapp.yml` runs on every push to `main` and can be started manually from the Actions tab. It audits, lints, typechecks, builds, zips `.next/standalone`, signs in to Azure with OIDC, and deploys. No Azure password is stored in GitHub.
+`.github/workflows/azure-static-web-apps.yml` runs on every push to `main` and can be started manually from the Actions tab. It audits, lints, typechecks, and builds both the site and the API, then uploads `out/` and `api/` to the Static Web App. Pull requests aren't deployed, so no preview environment gets the production email settings.
 
 ### 1. Azure Communication Services email
 
@@ -107,61 +124,42 @@ Never commit real values. `.env*` files are gitignored, except `.env.example`.
 3. Create a Communication Services resource and connect the verified domain to it (Email > Domains).
 4. Copy the resource's connection string from Settings > Keys.
 
-### 2. App Service
+### 2. Static Web App
 
 ```bash
-RG=tiniglabs-rg; APP=<app-name>; KV=<keyvault-name>
+RG=tiniglabs-rg; APP=<static-web-app-name>
 az group create -n $RG -l southeastasia
-az appservice plan create -g $RG -n tiniglabs-plan --is-linux --sku B1
-az webapp create -g $RG -p tiniglabs-plan -n $APP --runtime "NODE:22-lts"
+az staticwebapp create -n $APP -g $RG -l eastasia --sku Free
 
-# Azure sets HOSTNAME to the container name, so bind to all interfaces explicitly
-az webapp config set -g $RG -n $APP \
-  --startup-file "HOSTNAME=0.0.0.0 node server.js" \
-  --always-on true --http20-enabled true --min-tls-version 1.2 --ftps-state Disabled
-az webapp update -g $RG -n $APP --https-only true
-az webapp config set -g $RG -n $APP --generic-configurations '{"healthCheckPath": "/api/health"}'
+# Read by the API at runtime. Static Web Apps stores these encrypted.
+az staticwebapp appsettings set -n $APP -g $RG --setting-names \
+  "ACS_CONNECTION_STRING=<connection string>"
 
-# Keep the ACS connection string in Key Vault, read with the app's managed identity
-az webapp identity assign -g $RG -n $APP
-az keyvault create -g $RG -n $KV --enable-rbac-authorization true
-az keyvault secret set --vault-name $KV -n acs-connection-string --value "<connection string>"
-az role assignment create --role "Key Vault Secrets User" \
-  --assignee $(az webapp identity show -g $RG -n $APP --query principalId -o tsv) \
-  --scope $(az keyvault show -n $KV --query id -o tsv)
-
-# The zip is prebuilt; don't let Azure run npm install/build on it
-az webapp config appsettings set -g $RG -n $APP --settings \
-  SCM_DO_BUILD_DURING_DEPLOYMENT=false NEXT_TELEMETRY_DISABLED=1 \
-  "ACS_CONNECTION_STRING=@Microsoft.KeyVault(VaultName=$KV;SecretName=acs-connection-string)"
+# Deployment token for GitHub Actions
+az staticwebapp secrets list -n $APP -g $RG --query properties.apiKey -o tsv
 ```
 
-### 3. GitHub OIDC
+`eastasia` is the closest Static Web Apps region to the Philippines. The Free plan covers the site, the managed API, and custom domains. Move to the Standard plan if you want the connection string as a Key Vault reference instead of an app setting.
 
-```bash
-az ad app create --display-name tiniglabs-github-deploy
-APP_ID=$(az ad app list --display-name tiniglabs-github-deploy --query "[0].appId" -o tsv)
-az ad sp create --id $APP_ID
-az ad app federated-credential create --id $APP_ID --parameters '{
-  "name": "github-production",
-  "issuer": "https://token.actions.githubusercontent.com",
-  "subject": "repo:<owner>/<repo>:environment:production",
-  "audiences": ["api://AzureADTokenExchange"]
-}'
-az role assignment create --role "Website Contributor" --assignee $APP_ID \
-  --scope $(az webapp show -g $RG -n $APP --query id -o tsv)
-```
+### 3. GitHub
 
-In GitHub, create an environment named `production` and add the repository variables `AZURE_WEBAPP_NAME`, `AZURE_CLIENT_ID` (the `APP_ID` above), `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID`. Limit the `production` environment to the `main` branch so pull requests from forks can't deploy.
+1. Create an environment named `production` and limit it to the `main` branch (Settings > Environments > Deployment branches), so forks and other branches can't deploy.
+2. In that environment, add the secret `AZURE_STATIC_WEB_APPS_API_TOKEN` with the token from step 2.
 
 ### 4. Custom domain
 
+`tiniglabs.digital` is an apex domain, so validate it with a TXT record:
+
 ```bash
-az webapp config hostname add -g $RG --webapp-name $APP --hostname tiniglabs.digital
-az webapp config ssl create -g $RG -n $APP --hostname tiniglabs.digital
+az staticwebapp hostname set -n $APP -g $RG --hostname tiniglabs.digital --validation-method dns-txt-token
+az staticwebapp hostname show -n $APP -g $RG --hostname tiniglabs.digital --query validationToken -o tsv
 ```
 
-Add the DNS records Azure asks for (a TXT `asuid` record plus an A or CNAME record) first.
+1. Add the token as a TXT record on `@`.
+2. Point the apex at the app's default hostname (`az staticwebapp show -n $APP -g $RG --query defaultHostname -o tsv`) with an ALIAS or ANAME record. Static Web Apps doesn't give apex domains a fixed IP, so a plain A record won't work.
+3. Optionally, add `www` as a CNAME to the same hostname and set it up the same way with `--validation-method cname-delegation`.
+
+Static Web Apps issues and renews the TLS certificate itself.
 
 ## Before launch
 
