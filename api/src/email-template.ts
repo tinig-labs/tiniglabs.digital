@@ -17,11 +17,8 @@ const BRAND = "Montserrat, -apple-system, 'Segoe UI', Helvetica, Arial, sans-ser
 export const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-export type Panel =
-  // A big word over a short line, like the role on the site's waitlist form
-  | { kind: "feature"; title: string; body: string }
-  // Label and value rows, for the internal signup records
-  | { kind: "facts"; rows: [label: string, value: string][] };
+// A big word over a short line, like the role on the site's waitlist form
+export type Panel = { title: string; body: string };
 
 export type EmailContent = {
   preheader: string;
@@ -34,17 +31,8 @@ export type EmailContent = {
 };
 
 function panelHtml(panel: Panel) {
-  const inner =
-    panel.kind === "feature"
-      ? `<p style="margin:0;font-family:${SANS};font-size:32px;line-height:1.15;font-weight:600;letter-spacing:-0.02em;color:${C.pandan}">${escapeHtml(panel.title)}</p>
-         <p style="margin:12px 0 0;font-family:${SANS};font-size:16px;line-height:1.6;color:${C.tinta}">${escapeHtml(panel.body)}</p>`
-      : `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">${panel.rows
-          .map(
-            ([label, value]) =>
-              `<tr><td style="padding:6px 16px 6px 0;font-family:${SANS};font-size:14px;color:${C.abo};white-space:nowrap;vertical-align:top">${escapeHtml(label)}</td>
-               <td style="padding:6px 0;font-family:${SANS};font-size:16px;color:${C.tinta};word-break:break-all">${escapeHtml(value)}</td></tr>`,
-          )
-          .join("")}</table>`;
+  const inner = `<p style="margin:0;font-family:${SANS};font-size:32px;line-height:1.15;font-weight:600;letter-spacing:-0.02em;color:${C.pandan}">${escapeHtml(panel.title)}</p>
+         <p style="margin:12px 0 0;font-family:${SANS};font-size:16px;line-height:1.6;color:${C.tinta}">${escapeHtml(panel.body)}</p>`;
 
   return `<tr><td style="padding:32px 0 0">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${C.mint};border-radius:20px">
@@ -109,8 +97,7 @@ export function renderEmail(content: EmailContent) {
   const text = [
     heading,
     ...paragraphs,
-    panel?.kind === "feature" ? `${panel.title}\n${panel.body}` : "",
-    panel?.kind === "facts" ? panel.rows.map(([l, v]) => `${l}: ${v}`).join("\n") : "",
+    panel ? `${panel.title}\n${panel.body}` : "",
     "--",
     reason ?? "",
     unsubscribeUrl ? `Unsubscribe: ${unsubscribeUrl}` : "",

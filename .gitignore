@@ -48,3 +48,9 @@ api/local.settings.json
 
 # static web apps cli
 .swa/
+
+# azurite (local storage emulator)
+.azurite/
+__azurite_db_*
+__blobstorage__/
+__queuestorage__/

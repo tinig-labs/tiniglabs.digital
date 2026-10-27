@@ -1,6 +1,7 @@
-import { ROLES, blogEmails, unsubscribeRecord, waitlistEmails, type Role } from "./emails";
+import { ROLES, blogConfirmation, waitlistConfirmation, type Role } from "./emails";
 import { sendMail, type Mail } from "./mailer";
 import { isRateLimited } from "./rate-limit";
+import { addSubscriber, removeSubscriber } from "./subscribers";
 import { readToken, type List } from "./unsubscribe";
 
 export type SignupResult = { ok: true } | { ok: false; status: number; error: string };
@@ -28,7 +29,7 @@ export async function joinWaitlist(input: Input, ip: string): Promise<SignupResu
   if (!role) return { ok: false, status: 400, error: "Choose how you're joining." };
   if (isRateLimited("waitlist", ip)) return TOO_MANY;
 
-  return deliver("waitlist", () => waitlistEmails(email, role));
+  return subscribe("waitlist", email, () => waitlistConfirmation(email, role), role);
 }
 
 export async function subscribeToBlog(input: Input, ip: string): Promise<SignupResult> {
@@ -37,45 +38,52 @@ export async function subscribeToBlog(input: Input, ip: string): Promise<SignupR
   if (!email) return INVALID;
   if (isRateLimited("blog", ip)) return TOO_MANY;
 
-  return deliver("blog", () => blogEmails(email));
+  return subscribe("blog", email, () => blogConfirmation(email));
 }
 
-// There's no database: an unsubscribe is a record in the list's inbox, and
-// that address gets removed from the list kept there
 export async function unsubscribe(list: List, token: unknown): Promise<SignupResult> {
+  const failed: SignupResult = { ok: false, status: 503, error: "Couldn't unsubscribe you right now. Try again in a few minutes." };
   let target;
   try {
     target = readToken(token);
   } catch (err) {
     console.error("[unsubscribe] can't verify token", err);
-    return { ok: false, status: 503, error: "Couldn't unsubscribe you right now. Try again in a few minutes." };
+    return failed;
   }
   // Each list's endpoint only accepts that list's links
   if (!target || target.list !== list) return { ok: false, status: 400, error: "This unsubscribe link isn't valid." };
 
   try {
-    await sendMail(unsubscribeRecord(target.list, target.email));
+    await removeSubscriber(list, target.email);
     return { ok: true };
   } catch (err) {
-    console.error("[unsubscribe] record email failed", err);
-    return { ok: false, status: 503, error: "Couldn't unsubscribe you right now. Try again in a few minutes." };
+    console.error(`[${list}] can't remove subscriber`, err);
+    return failed;
   }
 }
 
-// The record copy is what keeps the signup, so only its failure fails the form
-async function deliver(form: string, compose: () => { record: Mail; confirmation: Mail }): Promise<SignupResult> {
-  let emails;
+// Saving the subscriber is what counts, so only a database failure fails the
+// form. The confirmation email is sent after, and its failure is only logged.
+async function subscribe(list: List, email: string, compose: () => Mail, role?: Role): Promise<SignupResult> {
+  let confirmation;
   try {
-    emails = compose();
+    confirmation = compose();
   } catch (err) {
-    console.error(`[${form}] can't compose emails`, err);
+    console.error(`[${list}] can't compose confirmation`, err);
     return UNAVAILABLE;
   }
-  const [saved, confirmed] = await Promise.allSettled([sendMail(emails.record), sendMail(emails.confirmation)]);
-  if (confirmed.status === "rejected") console.error(`[${form}] confirmation email failed`, confirmed.reason);
-  if (saved.status === "rejected") {
-    console.error(`[${form}] record email failed`, saved.reason);
+
+  try {
+    await addSubscriber(list, email, role);
+  } catch (err) {
+    console.error(`[${list}] can't save subscriber`, err);
     return UNAVAILABLE;
+  }
+
+  try {
+    await sendMail(confirmation);
+  } catch (err) {
+    console.error(`[${list}] confirmation email failed`, err);
   }
   return { ok: true };
 }

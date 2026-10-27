@@ -24,7 +24,7 @@ export default function BlogUnsubscribePage() {
         action: "Unsubscribe from talâ",
         busy: "Unsubscribing…",
         doneHeading: "You're unsubscribed from talâ.",
-        doneBody: "{email} won't get new posts by email anymore. It can take a few days to clear from our list. Posts will still be on the blog whenever you want to read them.",
+        doneBody: "{email} won't get new posts by email anymore. Posts will still be on the blog whenever you want to read them.",
         back: { href: "/blog", label: "Go to the blog" },
       }}
     />

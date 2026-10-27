@@ -117,7 +117,8 @@ export default function PrivacyPage() {
         <List>
           <li>Microsoft Azure Static Web Apps hosts the website and runs the signup forms.</li>
           <li>Microsoft Azure Communication Services sends our automatic emails.</li>
-          <li>Zoho Mail hosts our mailboxes, where signups arrive and your replies go.</li>
+          <li>Microsoft Azure Table Storage stores the waitlist and subscriber lists.</li>
+          <li>Zoho Mail hosts our mailboxes, where your replies go.</li>
         </List>
         <P>
           They may store this data outside the Philippines. We share data with anyone else only
@@ -127,8 +128,9 @@ export default function PrivacyPage() {
 
       <Section id="security" title="How we protect it">
         <P>
-          The site is served only over HTTPS. Signups are kept in mailboxes that only the
-          developer can open, and service keys are stored encrypted in Azure, not in the code.
+          The site is served only over HTTPS. The lists are kept in Azure storage that only the
+          developer can access, and service keys are stored encrypted in Azure, not in the code.
+          When you unsubscribe, your address is deleted from that list right away.
         </P>
       </Section>
 

@@ -11,6 +11,7 @@ The tinig labs website is built on the work of others. Thank you.
 | [Tailwind CSS](https://github.com/tailwindlabs/tailwindcss) | Styling | MIT |
 | [Azure Communication Services Email SDK](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/communication/communication-email) | Sending signup emails | MIT |
 | [Azure Functions Node.js library](https://github.com/Azure/azure-functions-nodejs-library) | The signup API | MIT |
+| [Azure Tables SDK](https://github.com/Azure/azure-sdk-for-js/tree/main/sdk/tables/data-tables) | Storing the waitlist and subscriber lists | MIT |
 | [TypeScript](https://github.com/microsoft/TypeScript) | Type checking | Apache 2.0 |
 | [ESLint](https://github.com/eslint/eslint) | Linting | MIT |
 
@@ -29,4 +30,4 @@ The website's license is the [Functional Source License](https://fsl.software), 
 
 ## Hosting and services
 
-The site and its signup API run on Azure Static Web Apps, and its emails are sent with Azure Communication Services.
+The site and its signup API run on Azure Static Web Apps, the lists are stored in Azure Table Storage, and emails are sent with Azure Communication Services.

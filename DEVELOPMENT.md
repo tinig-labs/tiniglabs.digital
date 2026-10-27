@@ -21,11 +21,12 @@ The signup forms post to `/api/*`, which `next dev` doesn't serve, so they show 
 
 ```bash
 npm install --prefix api
-cp api/local.settings.example.json api/local.settings.json   # fill in ACS_CONNECTION_STRING
+cp api/local.settings.example.json api/local.settings.json   # set UNSUBSCRIBE_SECRET; ACS_CONNECTION_STRING is optional
+npx azurite --location .azurite --silent                     # local Table Storage, in a second terminal
 npm run dev:swa              # http://localhost:4280
 ```
 
-Without a real `ACS_CONNECTION_STRING`, the API still runs and the forms show the same error, which is the expected behavior when email can't be sent.
+The example settings point `STORAGE_CONNECTION_STRING` at [Azurite](https://learn.microsoft.com/azure/storage/common/storage-use-azurite), the local storage emulator, so signups are saved on your machine. Without a real `ACS_CONNECTION_STRING`, signups still save and the forms report success. Only the confirmation email fails, and that's logged.
 
 ## Checks
 
@@ -63,11 +64,12 @@ app/
 api/                     Azure Functions app, deployed as the Static Web App's API
   src/functions/signup.ts    POST /api/waitlist and POST /api/subscribe
   src/functions/unsubscribe.ts   /api/waitlist/unsubscribe and /api/blog/unsubscribe
-  src/signup.ts              Validation, sending, and unsubscribing
+  src/signup.ts              Validation, saving, confirming, and unsubscribing
   src/emails.ts              What each email says
   src/email-template.ts      The HTML and plain-text layout every email uses
   src/unsubscribe.ts         Signed unsubscribe links and List-Unsubscribe headers
   src/mailer.ts              Azure Communication Services client
+  src/subscribers.ts         The subscriber lists in Azure Table Storage
   src/rate-limit.ts          Per-IP attempt limit
 public/
   staticwebapp.config.json   Security headers, 404 page, caching, API runtime
@@ -84,36 +86,57 @@ swa-cli.config.json      Local Static Web Apps CLI setup used by npm run dev:swa
 
 ## How signups work
 
-Email on `tiniglabs.digital` is split between two services:
+Both forms send JSON to the API with `postSignup` in `app/_components/signup.ts`. The API saves the subscriber in Azure Table Storage, then sends a confirmation email:
 
-- **Azure Communication Services** only sends, and only as `DoNotReply@tiniglabs.digital`.
-- **Zoho Mail** handles everything else: the `waitlist@` and `subscribe@` inboxes, all incoming mail (MX), and any mail sent by a person.
-
-Both forms send JSON to the API with `postSignup` in `app/_components/signup.ts`. The API then sends two emails from DoNotReply:
-
-| Form | Endpoint | Record copy to (Zoho) | Confirmation to | Replies to the confirmation go to (Zoho) |
+| Form | Endpoint | Saved to | Confirmation from | Replies go to (Zoho) |
 |---|---|---|---|---|
-| Waitlist (home page) | `POST /api/waitlist` | `waitlist@tiniglabs.digital` | the person signing up | `waitlist@tiniglabs.digital` |
-| Blog subscribe (`/blog/`) | `POST /api/subscribe` | `subscribe@tiniglabs.digital` | the person signing up | `subscribe@tiniglabs.digital` |
+| Waitlist (home page) | `POST /api/waitlist` | `subscribers` table, partition `waitlist` | `DoNotReply@tiniglabs.digital` | `waitlist@tiniglabs.digital` |
+| Blog subscribe (`/blog/`) | `POST /api/subscribe` | `subscribers` table, partition `blog` | `DoNotReply@tiniglabs.digital` | `subscribe@tiniglabs.digital` |
 
-The API answers `{ "ok": true }`, or `{ "ok": false, "error": "..." }` with status 400 (bad input), 429 (too many attempts), or 503 (email couldn't be sent). The error text is written for people and is shown in the form as is.
-
-The record copy is the signup list. Its subject line is `Waitlist: <role>, <email>` or `Blog subscriber: <email>`, and its Reply-To is the subscriber. A form only reports success once ACS accepts the record copy. If only the confirmation fails, the error is logged and the signup still counts.
+The API answers `{ "ok": true }`, or `{ "ok": false, "error": "..." }` with status 400 (bad input), 429 (too many attempts), or 503 (the subscriber couldn't be saved). The error text is written for people and is shown in the form as is. A form reports success once the subscriber is saved. If only the confirmation email fails, the error is logged and the signup still counts.
 
 The API validates the email, drops submissions that fill a hidden honeypot field, and limits each IP to 5 attempts per 10 minutes per form. The limit is kept in memory, so each Functions instance counts separately.
 
 If you change what the forms collect or how long anything is kept, update the table in `app/privacy/page.tsx` in the same pull request.
 
+### The subscriber list
+
+`api/src/subscribers.ts` keeps both lists in one table (`subscribers`, created on first use):
+
+| Column | Value |
+|---|---|
+| `PartitionKey` | `waitlist` or `blog` |
+| `RowKey` | The email address, URL-encoded (Table Storage keys can't contain `/ \ # ?`) |
+| `email` | The email address as entered, lowercased |
+| `role` | `developer`, `specialist`, or `supporter` (waitlist only) |
+| `subscribedAt` | When they last signed up |
+
+Each address appears at most once per list. Signing up again updates the row, for example with a new role. Unsubscribing deletes the row, so the table only ever holds people who want email.
+
+To see or export a list, open the storage account in the Azure portal and use **Storage browser > Tables > subscribers**, or run:
+
+```bash
+az storage entity query --connection-string "<storage connection string>" -t subscribers \
+  --filter "PartitionKey eq 'waitlist'" --select email role subscribedAt -o table
+```
+
+### Email
+
+Email on `tiniglabs.digital` is split between two services:
+
+- **Azure Communication Services** only sends, and only as `DoNotReply@tiniglabs.digital`.
+- **Zoho Mail** handles everything else: the `waitlist@` and `subscribe@` inboxes, all incoming mail (MX), and any mail sent by a person.
+
 ### Email layout
 
-Every email is built by `renderEmail` in `api/src/email-template.ts`. The layout follows the site: an off-white page, the lowercase wordmark, a large heading, and one mint panel for the part that matters. For a confirmation, that's the person's role or talâ; for a record, it's the signup details. Mail apps strip `<style>` and modern CSS, so the template uses tables and inline styles only. Each email also has a plain-text version.
+Every email is built by `renderEmail` in `api/src/email-template.ts`. The layout follows the site: an off-white page, the lowercase wordmark, a large heading, and one mint panel for the part that matters: the person's role, or talâ. Mail apps strip `<style>` and modern CSS, so the template uses tables and inline styles only. Each email also has a plain-text version.
 
 To preview a change, build the API and write an email to a file:
 
 ```bash
 npm run build:api
 cd api && UNSUBSCRIBE_SECRET=$(node -e "console.log('x'.repeat(32))") node -e "
-  require('fs').writeFileSync('preview.html', require('./dist/src/emails.js').waitlistEmails('you@example.com', 'developer').confirmation.html)"
+  require('fs').writeFileSync('preview.html', require('./dist/src/emails.js').waitlistConfirmation('you@example.com', 'developer').html)"
 ```
 
 ### Unsubscribing
@@ -127,12 +150,12 @@ Each list has its own unsubscribe page and endpoint, and every email links to th
 
 Every email to a subscriber offers two ways to unsubscribe:
 
-- **The mail app's own button.** The `List-Unsubscribe` and `List-Unsubscribe-Post` headers make Gmail, Yahoo, Apple Mail, and Outlook show their own Unsubscribe button. Gmail and Yahoo unsubscribe in one click by POSTing to the list's endpoint, as RFC 8058 defines. Mail apps that don't support that use the `mailto:` fallback, which sends an email to the list's Zoho inbox.
+- **The mail app's own button.** The `List-Unsubscribe` and `List-Unsubscribe-Post` headers make Gmail, Yahoo, Apple Mail, and Outlook show their own Unsubscribe button. Gmail and Yahoo unsubscribe in one click by POSTing to the list's endpoint, as RFC 8058 defines. Mail apps that don't support that use the `mailto:` fallback, which sends an email to the list's Zoho inbox. Those are the only unsubscribes you handle by hand: delete the row from the table.
 - **The Unsubscribe link in the footer.** It opens the list's page, which asks the person to confirm with a button. A plain visit never unsubscribes, because link scanners in mail systems open every link.
 
 Each link carries a token: the list and email address, signed with `UNSUBSCRIBE_SECRET`. The API only accepts tokens it signed, and each endpoint only accepts its own list's tokens, so nobody can unsubscribe someone else by editing the link. The secret also means links never expire. If you change the secret, every link in emails already sent stops working.
 
-There's no database, so an unsubscribe sends an `Unsubscribe: <email> (<list>)` record to that list's Zoho inbox. Remove the address from the list before the next email goes out. The page tells people this can take a few days.
+An unsubscribe deletes the person's row for that list right away. Using the same link twice is harmless.
 
 ## Build
 
@@ -148,10 +171,12 @@ To preview the static build without the API, serve `out/` with any static file s
 | Name | Where | Required | Default | Purpose |
 |---|---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | `.env.local` or the CI environment, at build time | no | `https://tiniglabs.digital` | Canonical origin for metadata, `robots.txt`, and `sitemap.xml` |
-| `ACS_CONNECTION_STRING` | Static Web App environment variables; `api/local.settings.json` locally | yes | | ACS resource connection string |
+| `STORAGE_CONNECTION_STRING` | Static Web App environment variables; `api/local.settings.json` locally | yes | | Storage account connection string for the subscriber lists. `UseDevelopmentStorage=true` locally, with Azurite. |
+| `SUBSCRIBERS_TABLE` | same as above | no | `subscribers` | Table name |
+| `ACS_CONNECTION_STRING` | same as above | yes | | ACS resource connection string, for confirmation emails |
 | `SENDER_EMAIL` | same as above | no | `DoNotReply@tiniglabs.digital` | The only ACS sender. Must be a MailFrom address on the ACS domain. |
-| `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Zoho inbox for waitlist records and replies |
-| `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Zoho inbox for blog subscriber records and replies |
+| `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Zoho inbox for replies to waitlist emails |
+| `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Zoho inbox for replies to blog emails |
 | `UNSUBSCRIBE_SECRET` | same as above | yes | | At least 32 random characters, used to sign unsubscribe links. Without it, signups fail with the 503 error. |
 | `SITE_URL` | same as above | no | `https://tiniglabs.digital` | Where unsubscribe links in emails point. Set it to the `azurestaticapps.net` address until the custom domain works. |
 
@@ -175,16 +200,28 @@ Zoho Mail already handles the domain's mailboxes and incoming mail. ACS is added
 4. Copy the resource's connection string from Settings > Keys.
 5. Optionally, add a DMARC record such as `_dmarc  TXT  v=DMARC1; p=none; rua=mailto:<a Zoho inbox>` to monitor that both services pass SPF and DKIM.
 
-### 2. Static Web App
+### 2. Storage account for the subscriber lists
 
 ```bash
-RG=tiniglabs-rg; APP=<static-web-app-name>
+RG=tiniglabs-rg; STORAGE=<storage-account-name>   # 3-24 lowercase letters and digits, globally unique
 az group create -n $RG -l southeastasia
+az storage account create -n $STORAGE -g $RG -l southeastasia --sku Standard_LRS \
+  --kind StorageV2 --min-tls-version TLS1_2 --allow-blob-public-access false
+az storage account show-connection-string -n $STORAGE -g $RG -o tsv
+```
+
+The API creates the `subscribers` table the first time someone signs up. At this size, Table Storage costs a few cents a month.
+
+### 3. Static Web App
+
+```bash
+APP=<static-web-app-name>
 az staticwebapp create -n $APP -g $RG -l eastasia --sku Free
 
 # Read by the API at runtime. Static Web Apps stores these encrypted.
 az staticwebapp appsettings set -n $APP -g $RG --setting-names \
-  "ACS_CONNECTION_STRING=<connection string>" \
+  "STORAGE_CONNECTION_STRING=<storage connection string>" \
+  "ACS_CONNECTION_STRING=<ACS connection string>" \
   "UNSUBSCRIBE_SECRET=$(openssl rand -hex 32)"
 
 # Deployment token for GitHub Actions
@@ -193,12 +230,12 @@ az staticwebapp secrets list -n $APP -g $RG --query properties.apiKey -o tsv
 
 `eastasia` is the closest Static Web Apps region to the Philippines. The Free plan covers the site, the managed API, and custom domains. Move to the Standard plan if you want the connection string as a Key Vault reference instead of an app setting.
 
-### 3. GitHub
+### 4. GitHub
 
 1. Create an environment named `production` and limit it to the `main` branch (Settings > Environments > Deployment branches), so forks and other branches can't deploy.
-2. In that environment, add the secret `AZURE_STATIC_WEB_APPS_API_TOKEN` with the token from step 2.
+2. In that environment, add the secret `AZURE_STATIC_WEB_APPS_API_TOKEN` with the token from step 3.
 
-### 4. Custom domain
+### 5. Custom domain
 
 `tiniglabs.digital` is an apex domain, so validate it with a TXT record:
 
@@ -216,4 +253,3 @@ Static Web Apps issues and renews the TLS certificate itself.
 ## Before launch
 
 - Have the Terms of Service (`app/terms/page.tsx`) and Privacy Policy (`app/privacy/page.tsx`) reviewed by a lawyer.
-- Unsubscribes arrive as records in the Zoho inboxes. Before sending posts to many people, move the subscriber list to storage the API can update itself, such as Azure Table Storage, so unsubscribes take effect immediately.

@@ -41,7 +41,7 @@ The lab's first project is speech recognition for Filipino voices that today's A
 | `/license`, `/terms`, `/privacy` | License, Terms of Service, and Privacy Policy |
 | `/waitlist/unsubscribe`, `/blog/unsubscribe` | Separate unsubscribe pages for the waitlist and the blog, linked from every email |
 
-The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which sends the signup by email through Azure Communication Services, so there's no database.
+The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which saves the signup in Azure Table Storage and sends a confirmation through Azure Communication Services.
 
 ## Quick start
 

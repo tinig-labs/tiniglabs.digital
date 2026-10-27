@@ -24,7 +24,7 @@ export default function WaitlistUnsubscribePage() {
         action: "Leave the waitlist",
         busy: "Leaving…",
         doneHeading: "You've left the waitlist.",
-        doneBody: "{email} won't get any more waitlist updates. It can take a few days to clear from our list. You can join again any time from the home page.",
+        doneBody: "{email} won't get any more waitlist updates. You can join again any time from the home page.",
         back: { href: "/#waitlist", label: "Go to the home page" },
       }}
     />
