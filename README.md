@@ -1,121 +1,63 @@
-# tiniglabs.digital
+<h1 align="center">
+  <a href="https://tiniglabs.digital">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="public/banner-dark.svg">
+      <img alt="tinig labs" src="public/banner.svg" width="520">
+    </picture>
+  </a>
+</h1>
 
-The website for tinig labs: open datasets, models, and tools for Filipino speech.
+<p align="center">
+  An independent lab releasing open models, datasets, and tools for the Philippines.
+</p>
 
-Built with Next.js 16 (App Router), React 19, and Tailwind CSS 4. Signup emails go through Azure Communication Services (ACS).
+<p align="center">
+  <a href="https://tiniglabs.digital">Website</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="https://tiniglabs.digital/blog">Blog</a>
+  &nbsp;&nbsp;|&nbsp;&nbsp;
+  <a href="https://github.com/tinig-labs">GitHub</a>
+</p>
 
-## Develop
+<p align="center">
+  <a href="LICENSE.md"><img alt="License: FSL-1.1-ALv2" src="https://img.shields.io/badge/license-FSL--1.1--ALv2-1F6B4F"></a>
+  <img alt="Next.js 16" src="https://img.shields.io/badge/Next.js-16-13261F?logo=nextdotjs&logoColor=white">
+  <img alt="Node.js 20.9 or later" src="https://img.shields.io/badge/node-%E2%89%A520.9-1F6B4F?logo=nodedotjs&logoColor=white">
+</p>
+
+---
+
+This is the source for [tiniglabs.digital](https://tiniglabs.digital), the website of tinig labs. *Tinig* is Filipino for voice.
+
+The lab's first project is speech recognition for Filipino voices that today's AI gets wrong, such as speech after a stroke, with a cleft palate, or in therapy. This repository is only the website. The lab's other work is at [github.com/tinig-labs](https://github.com/tinig-labs).
+
+## What's on the site
+
+| Page | What it does |
+|---|---|
+| `/` | Explains the lab and the speech project, with a Said/Meant demo of common speech errors and the waitlist signup |
+| `/blog` | talâ, the blog. Coming soon, with an email signup for the first post. |
+| `/license`, `/terms`, `/privacy` | License, Terms of Service, and Privacy Policy |
+
+The site has no cookies or analytics. Signups are sent by email through Azure Communication Services, so there's no database.
+
+## Quick start
 
 ```bash
 npm install
-cp .env.example .env.local   # fill in ACS_CONNECTION_STRING to send real email
-npm run dev                  # http://localhost:3000
-npm run lint
-npm run typecheck
+npm run dev     # http://localhost:3000
 ```
 
-Without `ACS_CONNECTION_STRING`, the pages work but both forms return "Couldn't sign you up right now."
+You need Node.js 20.9 or later. The signup forms need an Azure Communication Services connection string to send email; everything else works without one.
 
-## How signups work
+## Documentation
 
-Both forms call server actions in `app/actions.ts`, which send two emails through ACS:
+- [DEVELOPMENT.md](DEVELOPMENT.md): project layout, how signups work, environment variables, and deploying to Azure
+- [CONTRIBUTING.md](CONTRIBUTING.md): how to report bugs and security problems, and how to propose changes
+- [ACKNOWLEDGEMENTS.md](ACKNOWLEDGEMENTS.md): the software, typefaces, and services the site is built on
 
-| Form | Sent from | Record copy to | Confirmation to |
-|---|---|---|---|
-| Waitlist (home page) | `waitlist@tiniglabs.digital` | `waitlist@tiniglabs.digital` | the person signing up |
-| Blog subscribe (`/blog`) | `subscribe@tiniglabs.digital` | `subscribe@tiniglabs.digital` | the person signing up |
+## License
 
-The record copy is the signup list: its subject line is `Waitlist: <role>, <email>` or `Blog subscriber: <email>`, and its Reply-To is the subscriber. A form only reports success once ACS accepts the record copy. If just the confirmation fails, the error is logged and the signup still counts.
+The website code is under the [Functional Source License 1.1, Apache 2.0 Future License](LICENSE.md) (FSL-1.1-ALv2). You can use, copy, and change it for anything except a competing commercial product. Each version becomes available under Apache 2.0 two years after it's published.
 
-The actions validate the email on the server, drop submissions that fill a hidden honeypot field, and limit each IP to 5 attempts per 10 minutes per form. The limit is kept in memory, so each instance counts separately.
-
-## Build and run in production
-
-```bash
-npm run build      # next build, then copies public/ and .next/static into .next/standalone
-npm start          # node .next/standalone/server.js
-```
-
-`.next/standalone` is self-contained, so that folder is all a server needs.
-
-### Environment variables
-
-| Name | Required | Default | Purpose |
-|---|---|---|---|
-| `ACS_CONNECTION_STRING` | yes | | ACS resource connection string. Store in Key Vault. |
-| `WAITLIST_EMAIL` | no | `waitlist@tiniglabs.digital` | Waitlist sender and record inbox |
-| `BLOG_EMAIL` | no | `subscribe@tiniglabs.digital` | Blog sender and record inbox |
-| `NEXT_PUBLIC_SITE_URL` | no | `https://tiniglabs.digital` | Canonical origin for metadata, `robots.txt`, `sitemap.xml`. Read at build time. |
-| `PORT` / `HOSTNAME` | no | `3000` / `0.0.0.0` | Azure sets `PORT`. Set `HOSTNAME` in the startup command (below). |
-
-## Deploy to Azure App Service
-
-`.github/workflows/azure-webapp.yml` runs on every push to `main` (or manually from the Actions tab). It audits, lints, typechecks, builds, zips `.next/standalone`, signs in to Azure with OIDC, and deploys.
-
-### 1. Azure Communication Services email
-
-1. Create an Email Communication Service, add the custom domain `tiniglabs.digital`, and add the SPF, DKIM, and DKIM2 DNS records it gives you until the domain shows Verified. The domain already hosts mailboxes, so merge the SPF into its existing TXT record (one `v=spf1` record, with `include:spf.protection.outlook.com` added) instead of creating a second one.
-2. Under the domain's MailFrom addresses, add `waitlist` and `subscribe` (display name: `tinig labs`).
-3. Create a Communication Services resource and connect the verified domain to it (Email > Domains).
-4. Copy the resource's connection string from Settings > Keys.
-
-### 2. App Service
-
-```bash
-RG=tiniglabs-rg; APP=<app-name>; KV=<keyvault-name>
-az group create -n $RG -l southeastasia
-az appservice plan create -g $RG -n tiniglabs-plan --is-linux --sku B1
-az webapp create -g $RG -p tiniglabs-plan -n $APP --runtime "NODE:22-lts"
-
-# Azure sets HOSTNAME to the container name, so bind to all interfaces explicitly
-az webapp config set -g $RG -n $APP \
-  --startup-file "HOSTNAME=0.0.0.0 node server.js" \
-  --always-on true --http20-enabled true --min-tls-version 1.2 --ftps-state Disabled
-az webapp update -g $RG -n $APP --https-only true
-az webapp config set -g $RG -n $APP --generic-configurations '{"healthCheckPath": "/api/health"}'
-
-# Keep the ACS connection string in Key Vault, read with the app's managed identity
-az webapp identity assign -g $RG -n $APP
-az keyvault create -g $RG -n $KV --enable-rbac-authorization true
-az keyvault secret set --vault-name $KV -n acs-connection-string --value "<connection string>"
-az role assignment create --role "Key Vault Secrets User" \
-  --assignee $(az webapp identity show -g $RG -n $APP --query principalId -o tsv) \
-  --scope $(az keyvault show -n $KV --query id -o tsv)
-
-# The zip is prebuilt; don't let Azure run npm install/build on it
-az webapp config appsettings set -g $RG -n $APP --settings \
-  SCM_DO_BUILD_DURING_DEPLOYMENT=false NEXT_TELEMETRY_DISABLED=1 \
-  "ACS_CONNECTION_STRING=@Microsoft.KeyVault(VaultName=$KV;SecretName=acs-connection-string)"
-```
-
-### 3. GitHub OIDC
-
-```bash
-az ad app create --display-name tiniglabs-github-deploy
-APP_ID=$(az ad app list --display-name tiniglabs-github-deploy --query "[0].appId" -o tsv)
-az ad sp create --id $APP_ID
-az ad app federated-credential create --id $APP_ID --parameters '{
-  "name": "github-production",
-  "issuer": "https://token.actions.githubusercontent.com",
-  "subject": "repo:<owner>/<repo>:environment:production",
-  "audiences": ["api://AzureADTokenExchange"]
-}'
-az role assignment create --role "Website Contributor" --assignee $APP_ID \
-  --scope $(az webapp show -g $RG -n $APP --query id -o tsv)
-```
-
-In GitHub, create an environment named `production` and add the repository variables `AZURE_WEBAPP_NAME`, `AZURE_CLIENT_ID` (the `APP_ID` above), `AZURE_TENANT_ID`, and `AZURE_SUBSCRIPTION_ID`.
-
-### 4. Custom domain
-
-```bash
-az webapp config hostname add -g $RG --webapp-name $APP --hostname tiniglabs.digital
-az webapp config ssl create -g $RG -n $APP --hostname tiniglabs.digital
-```
-
-Add the DNS records Azure asks for (a TXT `asuid` record plus an A or CNAME record) first.
-
-## Before launch
-
-- Footer links for GitHub, License, Terms of Service, and Privacy Policy still point to `#` (`app/_components/site-footer.tsx`). Since the site now collects email addresses, publish a privacy policy.
-- Unsubscribing is by replying to the confirmation email. Once real posts go out, use a sending setup with a one-click unsubscribe link.
+The tinig labs name and logo aren't covered by the code license. Models, datasets, and tools from tinig labs each come with their own license.

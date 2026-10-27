@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
 import { Brand, focusRing } from "./_components/brand";
 import { HoneypotField } from "./_components/honeypot-field";
@@ -242,6 +243,13 @@ function WaitlistForm() {
       >
         {submitting ? "Joining…" : "Join the waitlist"}
       </button>
+      <p className="mt-4 text-sm text-[var(--abo)]">
+        We only email you about this. Read the{" "}
+        <Link href="/privacy" className={`rounded-sm underline underline-offset-4 hover:text-[var(--pandan)] ${focusRing}`}>
+          privacy policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }
@@ -251,9 +259,9 @@ function WaitlistForm() {
 /* ------------------------------------------------------------------ */
 
 const BUILDING = [
-  { title: "Open datasets", body: "Filipino speech, typical and atypical, recorded with consent and labeled by clinicians." },
-  { title: "Open models", body: "Speech recognition for Philippine languages, with weights and honest benchmarks." },
-  { title: "Tools", body: "A therapy practice app, and an API for developers building in Filipino." },
+  { title: "Open datasets", body: "Collected with consent and documented, so anyone can check how they were made." },
+  { title: "Open models", body: "Released with weights, training code, and honest benchmarks." },
+  { title: "Tools", body: "Apps and APIs built on our models, for people who'd never touch a model." },
 ];
 
 const ROADMAP = [
@@ -285,11 +293,11 @@ export default function Home() {
         className="mx-auto grid max-w-6xl items-center gap-16 px-6 pb-28 pt-16 sm:px-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-40 lg:pt-24"
       >
         <div>
-          <h1 className="max-w-[13ch] text-[3rem] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem]">
-            Speech AI that understands every Filipino voice.
+          <h1 className="max-w-[14ch] text-[3rem] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem]">
+            An independent lab for open Filipino AI.
           </h1>
           <p className="mt-8 max-w-[40ch] text-lg leading-relaxed text-[var(--abo)] sm:text-xl">
-            Open datasets, models, and tools for the Philippines, starting with speech that
+            We release models, datasets, and tools anyone can use. First up: speech that
             today&apos;s AI gets wrong.
           </p>
           <a
@@ -310,14 +318,14 @@ export default function Home() {
           palate, or in therapy gets treated as noise.
         </p>
         <p className="mt-8 max-w-[48ch] text-lg leading-relaxed text-[var(--abo)]">
-          <Brand /> builds what Filipino clinicians and developers are missing, in the open. Tagalog
-          first, then Cebuano, Ilocano, and Hiligaynon.
+          Our first project builds what Filipino clinicians and developers are missing, in the
+          open. Tagalog first, then Cebuano, Ilocano, and Hiligaynon.
         </p>
       </section>
 
       {/* What we're building */}
       <section id="building" className="mx-auto max-w-6xl scroll-mt-6 px-6 pb-28 sm:px-10 lg:pb-40">
-        <h2 className="text-2xl font-semibold tracking-tight">What we&apos;re building</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">What we release</h2>
         <div className="mt-12 grid gap-12 md:grid-cols-3 md:gap-10">
           {BUILDING.map((b) => (
             <div key={b.title}>
@@ -330,7 +338,7 @@ export default function Home() {
 
       {/* Roadmap */}
       <section id="roadmap" className="mx-auto max-w-6xl scroll-mt-6 px-6 pb-28 sm:px-10 lg:pb-40">
-        <h2 className="text-2xl font-semibold tracking-tight">Where we are</h2>
+        <h2 className="text-2xl font-semibold tracking-tight">Where the speech project is</h2>
         <ol className="mt-12 grid gap-10 md:grid-cols-4 md:gap-8">
           {ROADMAP.map((s, i) => (
             <li key={s.title} className="border-t-2 pt-6" style={{ borderColor: s.now ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}>
@@ -352,7 +360,8 @@ export default function Home() {
               Help build it from day zero.
             </h2>
             <p className="mt-6 max-w-[38ch] text-lg leading-relaxed text-[var(--tinta)]/70">
-              <Brand /> is one developer, building in public. Join to follow along or to help.
+              <Brand /> is independent and run by one developer, in public. Join to follow
+              along or to help.
             </p>
           </div>
           <WaitlistForm />

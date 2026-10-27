@@ -4,7 +4,7 @@ import { SubscribeForm } from "./subscribe-form";
 import { TalaWord } from "./tala-word";
 
 const title = "talâ, the tinig labs blog";
-const description = "Notes from building open speech AI for Filipino voices. Coming soon.";
+const description = "Notes from an independent lab building open Filipino AI. Coming soon.";
 
 export const metadata: Metadata = {
   title,
@@ -40,8 +40,8 @@ export default function BlogPage() {
             Same spelling, two words. We named the blog after the note.
           </p>
           <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-[var(--abo)]">
-            Talâ is where <Brand /> will write up what it learns building speech AI for Filipino
-            voices.
+            Talâ is where <Brand /> will write up what it learns, from collecting data to releasing
+            models.
           </p>
           <div className="mt-10 max-w-[30rem]">
             <SubscribeForm />

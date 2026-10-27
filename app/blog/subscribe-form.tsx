@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { useId, useState, type FormEvent } from "react";
+import { focusRing } from "../_components/brand";
 import { HoneypotField } from "../_components/honeypot-field";
 import { subscribeToBlog } from "../actions";
 
@@ -104,6 +106,13 @@ export function SubscribeForm() {
           {error}
         </p>
       )}
+      <p className="mt-3 text-sm text-[var(--abo)]">
+        We only email you new posts. Read the{" "}
+        <Link href="/privacy" className={`rounded-sm underline underline-offset-4 hover:text-[var(--pandan)] ${focusRing}`}>
+          privacy policy
+        </Link>
+        .
+      </p>
     </form>
   );
 }

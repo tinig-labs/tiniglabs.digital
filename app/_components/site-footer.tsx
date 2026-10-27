@@ -1,21 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import type { MouseEvent } from "react";
 import { Brand, Wordmark, focusRing } from "./brand";
 
-// Placeholder destinations. Replace "#" with real URLs when they exist.
 const FOOTER_LINKS = [
   { label: "Blog", href: "/blog" },
-  { label: "GitHub", href: "#" },
-  { label: "License", href: "#" },
-  { label: "Terms of Service", href: "#" },
-  { label: "Privacy Policy", href: "#" },
+  { label: "GitHub", href: "https://github.com/tinig-labs" },
+  { label: "License", href: "/license" },
+  { label: "Terms of Service", href: "/terms" },
+  { label: "Privacy Policy", href: "/privacy" },
 ];
-
-function ignoreDeadLink(e: MouseEvent<HTMLAnchorElement>) {
-  if (e.currentTarget.getAttribute("href") === "#") e.preventDefault();
-}
 
 export function SiteFooter() {
   return (
@@ -33,7 +27,7 @@ export function SiteFooter() {
                       {l.label}
                     </Link>
                   ) : (
-                    <a href={l.href} onClick={ignoreDeadLink} className={className}>
+                    <a href={l.href} className={className}>
                       {l.label}
                     </a>
                   )}
@@ -45,7 +39,7 @@ export function SiteFooter() {
       </div>
       <div className="mt-10 flex flex-col gap-2 border-t border-[var(--tinta)]/10 pt-6 text-sm text-[var(--abo)] sm:flex-row sm:justify-between">
         <p><Brand>tinig</Brand> is Filipino for voice.</p>
-        <p>© 2026 <Brand /></p>
+        <p>© 2026 <Brand />, an independent lab</p>
       </div>
     </footer>
   );

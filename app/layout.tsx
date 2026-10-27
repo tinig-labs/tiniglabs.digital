@@ -6,7 +6,7 @@ import { SITE_URL } from "./_components/site";
 import "./globals.css";
 
 const description =
-  "Open datasets, models, and tools for the Philippines, starting with speech that today's AI gets wrong.";
+  "An independent lab releasing open models, datasets, and tools for the Philippines, starting with speech that today's AI gets wrong.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
