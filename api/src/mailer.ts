@@ -1,7 +1,9 @@
 import { EmailClient } from "@azure/communication-email";
 
-// Mailboxes on the Azure Communication Services verified domain. Each one sends
-// the confirmation for its form and receives a copy of every signup.
+// ACS only sends, and only as DoNotReply. Every other address is a Zoho Mail
+// inbox: each form's inbox receives its signup records and replies to its
+// confirmations (through Reply-To).
+export const SENDER_ADDRESS = process.env.SENDER_EMAIL ?? "DoNotReply@tiniglabs.digital";
 export const WAITLIST_ADDRESS = process.env.WAITLIST_EMAIL ?? "waitlist@tiniglabs.digital";
 export const BLOG_ADDRESS = process.env.BLOG_EMAIL ?? "subscribe@tiniglabs.digital";
 

@@ -113,15 +113,15 @@ export default function PrivacyPage() {
       </Section>
 
       <Section id="providers" title="Who else handles it">
-        <P>We use Microsoft services to run the site, so Microsoft processes data on our behalf:</P>
+        <P>These services process data on our behalf:</P>
         <List>
-          <li>Azure Static Web Apps hosts the website and runs the signup forms.</li>
-          <li>Azure Communication Services sends our emails.</li>
-          <li>Microsoft 365 hosts the mailboxes where signups arrive.</li>
+          <li>Microsoft Azure Static Web Apps hosts the website and runs the signup forms.</li>
+          <li>Microsoft Azure Communication Services sends our automatic emails.</li>
+          <li>Zoho Mail hosts our mailboxes, where signups arrive and your replies go.</li>
         </List>
         <P>
-          Microsoft may store this data outside the Philippines. We share data with anyone else
-          only if the law requires it.
+          They may store this data outside the Philippines. We share data with anyone else only
+          if the law requires it.
         </P>
       </Section>
 

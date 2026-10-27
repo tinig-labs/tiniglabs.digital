@@ -78,12 +78,17 @@ swa-cli.config.json      Local Static Web Apps CLI setup used by npm run dev:swa
 
 ## How signups work
 
-Both forms send JSON to the API with `postSignup` in `app/_components/signup.ts`:
+Email on `tiniglabs.digital` is split between two services:
 
-| Form | Endpoint | Sent from | Record copy to | Confirmation to |
+- **Azure Communication Services** only sends, and only as `DoNotReply@tiniglabs.digital`.
+- **Zoho Mail** handles everything else: the `waitlist@` and `subscribe@` inboxes, all incoming mail (MX), and any mail sent by a person.
+
+Both forms send JSON to the API with `postSignup` in `app/_components/signup.ts`. The API then sends two emails from DoNotReply:
+
+| Form | Endpoint | Record copy to (Zoho) | Confirmation to | Replies to the confirmation go to (Zoho) |
 |---|---|---|---|---|
-| Waitlist (home page) | `POST /api/waitlist` | `waitlist@tiniglabs.digital` | `waitlist@tiniglabs.digital` | the person signing up |
-| Blog subscribe (`/blog/`) | `POST /api/subscribe` | `subscribe@tiniglabs.digital` | `subscribe@tiniglabs.digital` | the person signing up |
+| Waitlist (home page) | `POST /api/waitlist` | `waitlist@tiniglabs.digital` | the person signing up | `waitlist@tiniglabs.digital` |
+| Blog subscribe (`/blog/`) | `POST /api/subscribe` | `subscribe@tiniglabs.digital` | the person signing up | `subscribe@tiniglabs.digital` |
 
 The API answers `{ "ok": true }`, or `{ "ok": false, "error": "..." }` with status 400 (bad input), 429 (too many attempts), or 503 (email couldn't be sent). The error text is written for people and is shown in the form as is.
 
@@ -108,8 +113,9 @@ To preview the static build without the API, serve `out/` with any static file s
 |---|---|---|---|---|
 | `NEXT_PUBLIC_SITE_URL` | `.env.local` or the CI environment, at build time | no | `https://tiniglabs.digital` | Canonical origin for metadata, `robots.txt`, and `sitemap.xml` |
 | `ACS_CONNECTION_STRING` | Static Web App environment variables; `api/local.settings.json` locally | yes | | ACS resource connection string |
-| `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Waitlist sender and record inbox |
-| `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Blog sender and record inbox |
+| `SENDER_EMAIL` | same as above | no | `DoNotReply@tiniglabs.digital` | The only ACS sender. Must be a MailFrom address on the ACS domain. |
+| `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Zoho inbox for waitlist records and replies |
+| `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Zoho inbox for blog subscriber records and replies |
 
 Never commit real values. `.env*` files (except `.env.example`) and `api/local.settings.json` are gitignored.
 
@@ -119,10 +125,17 @@ Never commit real values. `.env*` files (except `.env.example`) and `api/local.s
 
 ### 1. Azure Communication Services email
 
-1. Create an Email Communication Service, add the custom domain `tiniglabs.digital`, and add the SPF, DKIM, and DKIM2 DNS records it gives you until the domain shows Verified. The domain already hosts mailboxes, so merge the SPF into its existing TXT record (one `v=spf1` record, with `include:spf.protection.outlook.com` added) instead of creating a second one.
-2. Under the domain's MailFrom addresses, add `waitlist` and `subscribe` (display name: `tinig labs`).
+Zoho Mail already handles the domain's mailboxes and incoming mail. ACS is added for sending only:
+
+1. Create an Email Communication Service, add the custom domain `tiniglabs.digital`, and add the DNS records it gives you until the domain shows Verified:
+   - **Domain verification TXT:** add it as is.
+   - **DKIM and DKIM2 CNAMEs:** add them as is. They use their own selectors, so they don't clash with Zoho's DKIM record.
+   - **SPF:** a domain can have only one `v=spf1` record. Add ACS to Zoho's existing record instead of creating a second one, for example `v=spf1 include:zohomail.com include:spf.protection.outlook.com ~all`. Keep whichever Zoho include your Zoho admin console shows, which depends on your Zoho region.
+   - **MX:** leave it pointing at Zoho. ACS doesn't receive mail.
+2. Keep only the `DoNotReply` MailFrom address (display name: `tinig labs`). Don't add `waitlist` or `subscribe` there; those addresses are Zoho inboxes.
 3. Create a Communication Services resource and connect the verified domain to it (Email > Domains).
 4. Copy the resource's connection string from Settings > Keys.
+5. Optionally, add a DMARC record such as `_dmarc  TXT  v=DMARC1; p=none; rua=mailto:<a Zoho inbox>` to monitor that both services pass SPF and DKIM.
 
 ### 2. Static Web App
 

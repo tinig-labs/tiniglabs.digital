@@ -3,6 +3,7 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "ACS_CONNECTION_STRING": "endpoint=https://<resource>.communication.azure.com/;accesskey=<key>",
+    "SENDER_EMAIL": "DoNotReply@tiniglabs.digital",
     "WAITLIST_EMAIL": "waitlist@tiniglabs.digital",
     "BLOG_EMAIL": "subscribe@tiniglabs.digital"
   }

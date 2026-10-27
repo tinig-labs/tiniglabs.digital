@@ -1,4 +1,4 @@
-import { BLOG_ADDRESS, WAITLIST_ADDRESS, sendMail, type Mail } from "./mailer";
+import { BLOG_ADDRESS, SENDER_ADDRESS, WAITLIST_ADDRESS, sendMail, type Mail } from "./mailer";
 import { isRateLimited } from "./rate-limit";
 
 export type SignupResult = { ok: true } | { ok: false; status: number; error: string };
@@ -35,14 +35,14 @@ export async function joinWaitlist(input: Input, ip: string): Promise<SignupResu
 
   return deliver("waitlist", {
     record: {
-      from: WAITLIST_ADDRESS,
+      from: SENDER_ADDRESS,
       to: WAITLIST_ADDRESS,
       replyTo: email,
       subject: `Waitlist: ${role.label}, ${email}`,
       text: `New waitlist signup.\n\nEmail: ${email}\nRole: ${role.label}\nTime: ${new Date().toISOString()}`,
     },
     confirmation: {
-      from: WAITLIST_ADDRESS,
+      from: SENDER_ADDRESS,
       to: email,
       replyTo: WAITLIST_ADDRESS,
       subject: "You're on the tinig labs waitlist",
@@ -64,14 +64,14 @@ export async function subscribeToBlog(input: Input, ip: string): Promise<SignupR
 
   return deliver("blog", {
     record: {
-      from: BLOG_ADDRESS,
+      from: SENDER_ADDRESS,
       to: BLOG_ADDRESS,
       replyTo: email,
       subject: `Blog subscriber: ${email}`,
       text: `New blog subscriber.\n\nEmail: ${email}\nTime: ${new Date().toISOString()}`,
     },
     confirmation: {
-      from: BLOG_ADDRESS,
+      from: SENDER_ADDRESS,
       to: email,
       replyTo: BLOG_ADDRESS,
       subject: "You're subscribed to talâ",
