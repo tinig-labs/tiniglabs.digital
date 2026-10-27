@@ -56,11 +56,17 @@ app/
   page.tsx               Home page, with the Said/Meant demo and the waitlist form
   blog/                  talâ, the blog (coming soon) and its subscribe form
   license/ terms/ privacy/   Legal pages; /license renders LICENSE.md at build time
+  waitlist/unsubscribe/  Leave the waitlist (from the link in waitlist emails)
+  blog/unsubscribe/      Unsubscribe from talâ (from the link in blog emails)
   _components/           Header, footer, brand wordmark, legal page shell, signup client
   robots.ts sitemap.ts not-found.tsx
 api/                     Azure Functions app, deployed as the Static Web App's API
   src/functions/signup.ts    POST /api/waitlist and POST /api/subscribe
-  src/signup.ts              Validation and the emails each form sends
+  src/functions/unsubscribe.ts   /api/waitlist/unsubscribe and /api/blog/unsubscribe
+  src/signup.ts              Validation, sending, and unsubscribing
+  src/emails.ts              What each email says
+  src/email-template.ts      The HTML and plain-text layout every email uses
+  src/unsubscribe.ts         Signed unsubscribe links and List-Unsubscribe headers
   src/mailer.ts              Azure Communication Services client
   src/rate-limit.ts          Per-IP attempt limit
 public/
@@ -98,6 +104,36 @@ The API validates the email, drops submissions that fill a hidden honeypot field
 
 If you change what the forms collect or how long anything is kept, update the table in `app/privacy/page.tsx` in the same pull request.
 
+### Email layout
+
+Every email is built by `renderEmail` in `api/src/email-template.ts`. The layout follows the site: an off-white page, the lowercase wordmark, a large heading, and one mint panel for the part that matters. For a confirmation, that's the person's role or talâ; for a record, it's the signup details. Mail apps strip `<style>` and modern CSS, so the template uses tables and inline styles only. Each email also has a plain-text version.
+
+To preview a change, build the API and write an email to a file:
+
+```bash
+npm run build:api
+cd api && UNSUBSCRIBE_SECRET=$(node -e "console.log('x'.repeat(32))") node -e "
+  require('fs').writeFileSync('preview.html', require('./dist/src/emails.js').waitlistEmails('you@example.com', 'developer').confirmation.html)"
+```
+
+### Unsubscribing
+
+Each list has its own unsubscribe page and endpoint, and every email links to the ones for its list. Unsubscribing from one list never affects the other.
+
+| List | Page | Endpoint |
+|---|---|---|
+| Waitlist | `/waitlist/unsubscribe/` ("Leave the waitlist") | `/api/waitlist/unsubscribe` |
+| talâ, the blog | `/blog/unsubscribe/` ("Unsubscribe from talâ") | `/api/blog/unsubscribe` |
+
+Every email to a subscriber offers two ways to unsubscribe:
+
+- **The mail app's own button.** The `List-Unsubscribe` and `List-Unsubscribe-Post` headers make Gmail, Yahoo, Apple Mail, and Outlook show their own Unsubscribe button. Gmail and Yahoo unsubscribe in one click by POSTing to the list's endpoint, as RFC 8058 defines. Mail apps that don't support that use the `mailto:` fallback, which sends an email to the list's Zoho inbox.
+- **The Unsubscribe link in the footer.** It opens the list's page, which asks the person to confirm with a button. A plain visit never unsubscribes, because link scanners in mail systems open every link.
+
+Each link carries a token: the list and email address, signed with `UNSUBSCRIBE_SECRET`. The API only accepts tokens it signed, and each endpoint only accepts its own list's tokens, so nobody can unsubscribe someone else by editing the link. The secret also means links never expire. If you change the secret, every link in emails already sent stops working.
+
+There's no database, so an unsubscribe sends an `Unsubscribe: <email> (<list>)` record to that list's Zoho inbox. Remove the address from the list before the next email goes out. The page tells people this can take a few days.
+
 ## Build
 
 ```bash
@@ -116,6 +152,8 @@ To preview the static build without the API, serve `out/` with any static file s
 | `SENDER_EMAIL` | same as above | no | `DoNotReply@tiniglabs.digital` | The only ACS sender. Must be a MailFrom address on the ACS domain. |
 | `WAITLIST_EMAIL` | same as above | no | `waitlist@tiniglabs.digital` | Zoho inbox for waitlist records and replies |
 | `BLOG_EMAIL` | same as above | no | `subscribe@tiniglabs.digital` | Zoho inbox for blog subscriber records and replies |
+| `UNSUBSCRIBE_SECRET` | same as above | yes | | At least 32 random characters, used to sign unsubscribe links. Without it, signups fail with the 503 error. |
+| `SITE_URL` | same as above | no | `https://tiniglabs.digital` | Where unsubscribe links in emails point. Set it to the `azurestaticapps.net` address until the custom domain works. |
 
 Never commit real values. `.env*` files (except `.env.example`) and `api/local.settings.json` are gitignored.
 
@@ -146,7 +184,8 @@ az staticwebapp create -n $APP -g $RG -l eastasia --sku Free
 
 # Read by the API at runtime. Static Web Apps stores these encrypted.
 az staticwebapp appsettings set -n $APP -g $RG --setting-names \
-  "ACS_CONNECTION_STRING=<connection string>"
+  "ACS_CONNECTION_STRING=<connection string>" \
+  "UNSUBSCRIBE_SECRET=$(openssl rand -hex 32)"
 
 # Deployment token for GitHub Actions
 az staticwebapp secrets list -n $APP -g $RG --query properties.apiKey -o tsv
@@ -177,4 +216,4 @@ Static Web Apps issues and renews the TLS certificate itself.
 ## Before launch
 
 - Have the Terms of Service (`app/terms/page.tsx`) and Privacy Policy (`app/privacy/page.tsx`) reviewed by a lawyer.
-- Unsubscribing is by replying to the confirmation email. Once real posts go out, use a sending setup with a one-click unsubscribe link.
+- Unsubscribes arrive as records in the Zoho inboxes. Before sending posts to many people, move the subscriber list to storage the API can update itself, such as Azure Table Storage, so unsubscribes take effect immediately.

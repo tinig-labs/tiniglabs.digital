@@ -21,7 +21,7 @@ const DATA = [
     what: "Email address and role",
     when: "You join the waitlist",
     why: "To send the updates for the role you picked",
-    kept: "Until you ask to be removed",
+    kept: "Until you unsubscribe",
   },
   {
     what: "Email address",
@@ -141,7 +141,8 @@ export default function PrivacyPage() {
           <li>get a copy of it</li>
         </List>
         <P>
-          To do any of these, reply to any email from us or write to <Mail to={CONTACT} />. If
+          To stop our emails, use the Unsubscribe link at the bottom of any of them. For anything
+          else, write to <Mail to={CONTACT} />. If
           you think we&apos;ve mishandled your data, you can also complain to the{" "}
           <A href="https://privacy.gov.ph">National Privacy Commission</A>.
         </P>

@@ -43,7 +43,8 @@ export default function TermsPage() {
         <P>
           Joining the waitlist or subscribing to the blog is free and doesn&apos;t commit you or
           us to anything. We share plans in good faith, but we can&apos;t promise that a project
-          will ship, or when. You can leave any time by replying to any email from us.
+          will ship, or when. You can leave any time with the Unsubscribe link in any email from
+          us.
         </P>
         <P>
           The <A href="/privacy">Privacy Policy</A> explains what we do with your email address.

@@ -20,29 +20,20 @@ export type Mail = {
   from: string;
   to: string;
   subject: string;
+  html: string;
   text: string;
   replyTo?: string;
+  headers?: Record<string, string>;
 };
 
-const escapeHtml = (s: string) =>
-  s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-
 // Resolves once ACS has accepted the message. Delivery itself is asynchronous.
-export async function sendMail({ from, to, subject, text, replyTo }: Mail) {
-  const html = text
-    .split("\n\n")
-    .map((p) => `<p style="margin:0 0 16px">${escapeHtml(p).replace(/\n/g, "<br>")}</p>`)
-    .join("");
-
+export async function sendMail({ from, to, subject, html, text, replyTo, headers }: Mail) {
   await getClient().beginSend({
     senderAddress: from,
     recipients: { to: [{ address: to }] },
     replyTo: replyTo ? [{ address: replyTo }] : undefined,
-    content: {
-      subject,
-      plainText: text,
-      html: `<div style="font-family:system-ui,sans-serif;font-size:16px;line-height:1.5;color:#13261F">${html}</div>`,
-    },
+    content: { subject, plainText: text, html },
+    headers,
     disableUserEngagementTracking: true,
   });
 }

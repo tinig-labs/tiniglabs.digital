@@ -39,6 +39,7 @@ The lab's first project is speech recognition for Filipino voices that today's A
 | `/` | Explains the lab and the speech project, with a Said/Meant demo of common speech errors and the waitlist signup |
 | `/blog` | talâ, the blog. Coming soon, with an email signup for the first post. |
 | `/license`, `/terms`, `/privacy` | License, Terms of Service, and Privacy Policy |
+| `/waitlist/unsubscribe`, `/blog/unsubscribe` | Separate unsubscribe pages for the waitlist and the blog, linked from every email |
 
 The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which sends the signup by email through Azure Communication Services, so there's no database.
 
