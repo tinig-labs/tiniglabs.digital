@@ -1,26 +1,10 @@
 @import "tailwindcss";
 
+/* Palette: pandan, mint, milk, ink. Shared by every page. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  --gatas: #F9FBFA;
+  --tinta: #13261F;
+  --abo: #5F6F68;
+  --pandan: #1F6B4F;
+  --mint: #E2F3EA;
 }
