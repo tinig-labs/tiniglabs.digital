@@ -2,6 +2,8 @@
 
 import { useId, useState, type FormEvent } from "react";
 import { Brand, focusRing } from "./_components/brand";
+import { HoneypotField } from "./_components/honeypot-field";
+import { joinWaitlist, type Role } from "./actions";
 
 /* ------------------------------------------------------------------ */
 /* Hero: said / meant                                                  */
@@ -77,7 +79,6 @@ function SaidMeant() {
 /* Waitlist                                                            */
 /* ------------------------------------------------------------------ */
 
-type Role = "developer" | "specialist" | "supporter";
 type Status = "idle" | "submitting" | "success" | "error";
 
 const ROLES: { id: Role; label: string; hint: string; next: string }[] = [
@@ -101,28 +102,6 @@ const ROLES: { id: Role; label: string; hint: string; next: string }[] = [
   },
 ];
 
-const STORAGE_KEY = "tinig-waitlist";
-
-// Placeholder submit. Replace the body with a POST to your waitlist endpoint.
-async function joinWaitlist(email: string, role: Role): Promise<{ duplicate: boolean }> {
-  await new Promise((r) => setTimeout(r, 900));
-  let list: { email: string; role: Role }[] = [];
-  try {
-    list = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
-  } catch {
-    list = [];
-  }
-  const duplicate = list.some((e) => e.email === email);
-  if (!duplicate) {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...list, { email, role }]));
-    } catch {
-      /* storage unavailable; ignore */
-    }
-  }
-  return { duplicate };
-}
-
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 function WaitlistForm() {
@@ -130,21 +109,21 @@ function WaitlistForm() {
   const [role, setRole] = useState<Role>("developer");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
-  const [duplicate, setDuplicate] = useState(false);
   const emailId = useId();
 
   const current = ROLES.find((r) => r.id === role)!;
 
-  async function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const clean = email.trim().toLowerCase();
     if (!clean) return fail("Enter your email address.");
     if (!EMAIL_RE.test(clean)) return fail("Check your email. It should look like name@example.com.");
+    const website = String(new FormData(e.currentTarget).get("website") ?? "");
     setError("");
     setStatus("submitting");
     try {
-      const res = await joinWaitlist(clean, role);
-      setDuplicate(res.duplicate);
+      const res = await joinWaitlist({ email: clean, role, website });
+      if (!res.ok) return fail(res.error);
       setStatus("success");
     } catch {
       fail("Couldn't reach the waitlist. Check your connection and try again.");
@@ -173,15 +152,16 @@ function WaitlistForm() {
           </svg>
         </span>
         <p className="mt-6 text-2xl font-semibold tracking-tight">
-          {duplicate ? "You're already on the waitlist." : "You're on the waitlist."}
+          You&apos;re on the waitlist.
         </p>
-        <p className="mt-2 leading-relaxed text-[var(--abo)]">{current.next}</p>
+        <p className="mt-2 leading-relaxed text-[var(--abo)]">
+          {current.next} A confirmation is on its way to your inbox.
+        </p>
         <button
           type="button"
           onClick={() => {
             setEmail("");
             setStatus("idle");
-            setDuplicate(false);
           }}
           className="mt-8 rounded-md font-semibold text-[var(--pandan)] underline-offset-4 hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--pandan)]"
         >
@@ -195,6 +175,7 @@ function WaitlistForm() {
 
   return (
     <form onSubmit={onSubmit} noValidate className="rounded-[28px] bg-white p-8 sm:p-10">
+      <HoneypotField />
       <fieldset>
         <legend className="text-sm font-medium text-[var(--abo)]">I&apos;m joining as a</legend>
         <div className="mt-3 grid grid-cols-3 gap-1 rounded-full bg-[var(--mint)] p-1">

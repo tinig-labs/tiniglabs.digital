@@ -3,9 +3,15 @@ import { Brand } from "../_components/brand";
 import { SubscribeForm } from "./subscribe-form";
 import { TalaWord } from "./tala-word";
 
+const title = "talâ, the tinig labs blog";
+const description = "Notes from building open speech AI for Filipino voices. Coming soon.";
+
 export const metadata: Metadata = {
-  title: "talâ, the tinig labs blog",
-  description: "Notes from building open speech AI for Filipino voices. Coming soon.",
+  title,
+  description,
+  alternates: { canonical: "/blog" },
+  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/blog" },
+  twitter: { card: "summary", title, description },
 };
 
 export default function BlogPage() {

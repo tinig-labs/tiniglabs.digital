@@ -2,12 +2,19 @@ import type { Metadata } from "next";
 import { figtree } from "./_components/brand";
 import { SiteFooter } from "./_components/site-footer";
 import { SiteHeader } from "./_components/site-header";
+import { SITE_URL } from "./_components/site";
 import "./globals.css";
 
+const description =
+  "Open datasets, models, and tools for the Philippines, starting with speech that today's AI gets wrong.";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "tinig labs",
-  description:
-    "Open datasets, models, and tools for the Philippines, starting with speech that today's AI gets wrong.",
+  description,
+  alternates: { canonical: "/" },
+  openGraph: { type: "website", siteName: "tinig labs", title: "tinig labs", description, url: "/" },
+  twitter: { card: "summary", title: "tinig labs", description },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

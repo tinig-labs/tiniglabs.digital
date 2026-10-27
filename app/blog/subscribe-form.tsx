@@ -1,30 +1,10 @@
 "use client";
 
 import { useId, useState, type FormEvent } from "react";
+import { HoneypotField } from "../_components/honeypot-field";
+import { subscribeToBlog } from "../actions";
 
 type Status = "idle" | "submitting" | "success" | "error";
-
-const STORAGE_KEY = "tinig-blog-subscribers";
-
-// Placeholder submit. Replace the body with a POST to your newsletter endpoint.
-async function subscribe(email: string): Promise<{ duplicate: boolean }> {
-  await new Promise((r) => setTimeout(r, 800));
-  let list: string[] = [];
-  try {
-    list = JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? "[]");
-  } catch {
-    list = [];
-  }
-  const duplicate = list.includes(email);
-  if (!duplicate) {
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...list, email]));
-    } catch {
-      /* storage unavailable; ignore */
-    }
-  }
-  return { duplicate };
-}
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -32,19 +12,19 @@ export function SubscribeForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
-  const [duplicate, setDuplicate] = useState(false);
   const emailId = useId();
 
-  async function onSubmit(e: FormEvent) {
+  async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const clean = email.trim().toLowerCase();
     if (!clean) return fail("Enter your email address.");
     if (!EMAIL_RE.test(clean)) return fail("Check your email. It should look like name@example.com.");
+    const website = String(new FormData(e.currentTarget).get("website") ?? "");
     setError("");
     setStatus("submitting");
     try {
-      const res = await subscribe(clean);
-      setDuplicate(res.duplicate);
+      const res = await subscribeToBlog({ email: clean, website });
+      if (!res.ok) return fail(res.error);
       setStatus("success");
     } catch {
       fail("Couldn't subscribe you. Check your connection and try again.");
@@ -73,11 +53,9 @@ export function SubscribeForm() {
           </svg>
         </span>
         <div>
-          <p className="text-lg font-semibold">
-            {duplicate ? "You're already subscribed." : "Subscribed."}
-          </p>
+          <p className="text-lg font-semibold">Subscribed.</p>
           <p className="mt-1 leading-relaxed text-[var(--abo)]">
-            The first post will land in your inbox.
+            Check your inbox for a confirmation. The first post will land there too.
           </p>
         </div>
       </div>
@@ -87,7 +65,8 @@ export function SubscribeForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={onSubmit} noValidate>
+    <form onSubmit={onSubmit} noValidate className="relative">
+      <HoneypotField />
       <label htmlFor={emailId} className="block text-sm font-medium text-[var(--abo)]">
         Get new posts by email
       </label>
