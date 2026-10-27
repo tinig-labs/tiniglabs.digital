@@ -30,20 +30,20 @@ export default function BlogPage() {
         }
       `}</style>
 
-      <section className="mx-auto max-w-6xl px-6 pb-28 pt-12 sm:px-10 lg:pb-36 lg:pt-20">
+      <section className="mx-auto max-w-6xl px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-36 lg:pt-20">
         <TalaWord />
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-16 px-6 pb-28 sm:px-10 lg:grid-cols-2 lg:gap-24 lg:pb-40">
+      <section className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 sm:gap-16 sm:px-10 sm:pb-28 lg:grid-cols-2 lg:gap-24 lg:pb-40">
         <div>
-          <p className="max-w-[20ch] text-[2rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.5rem]">
+          <p className="max-w-[20ch] text-[1.75rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.5rem]">
             Same spelling, two words. We named the blog after the note.
           </p>
           <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-[var(--abo)]">
             Talâ is where <Brand /> will write up what it learns, from collecting data to releasing
             models.
           </p>
-          <div className="mt-10 max-w-[30rem]">
+          <div className="mt-8 max-w-[30rem] sm:mt-10">
             <SubscribeForm />
           </div>
         </div>

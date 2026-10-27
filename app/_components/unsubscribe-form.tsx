@@ -130,7 +130,7 @@ export function UnsubscribeForm({ copy }: { copy: UnsubscribeCopy }) {
   }
 
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-28 pt-12 sm:px-10 lg:pb-40 lg:pt-20">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
       <style>{`
         @keyframes tl-swap { from { opacity: 0; transform: translateY(6px) } to { opacity: 1; transform: none } }
         .tl-swap { animation: tl-swap 280ms ease-out both; }

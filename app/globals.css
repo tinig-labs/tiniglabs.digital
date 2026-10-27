@@ -8,3 +8,30 @@
   --pandan: #1F6B4F;
   --mint: #E2F3EA;
 }
+
+/* Mobile menu: three bars that fold into an X, and a sheet that settles in once */
+.tl-burger > span {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  width: 100%;
+  border-radius: 2px;
+  background: var(--tinta);
+  transition: transform 220ms cubic-bezier(.2,.7,.2,1), opacity 160ms ease;
+}
+.tl-burger > span:nth-child(1) { top: 0; }
+.tl-burger > span:nth-child(2) { top: calc(50% - 1px); }
+.tl-burger > span:nth-child(3) { bottom: 0; }
+.tl-burger[data-open="true"] > span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.tl-burger[data-open="true"] > span:nth-child(2) { opacity: 0; }
+.tl-burger[data-open="true"] > span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+
+@keyframes tl-sheet { from { opacity: 0 } to { opacity: 1 } }
+@keyframes tl-sheet-item { from { opacity: 0; transform: translateY(10px) } to { opacity: 1; transform: none } }
+.tl-sheet { animation: tl-sheet 180ms ease-out both; }
+.tl-sheet-item { animation: tl-sheet-item 320ms cubic-bezier(.2,.7,.2,1) both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tl-burger > span { transition: none; }
+  .tl-sheet, .tl-sheet-item { animation: none; }
+}

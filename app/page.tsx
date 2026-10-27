@@ -31,7 +31,7 @@ function SaidMeant() {
           <p className="text-sm font-medium text-[var(--abo)]">Said</p>
           <p
             key={`s-${i}`}
-            className="tl-swap mt-1 text-[5.5rem] font-medium leading-none tracking-tight text-[var(--abo)] sm:text-[7.5rem]"
+            className="tl-swap mt-1 text-[clamp(4.5rem,22vw,5.5rem)] font-medium leading-none tracking-tight text-[var(--abo)] sm:text-[7.5rem]"
           >
             {ex.said}
           </p>
@@ -40,14 +40,14 @@ function SaidMeant() {
           <p className="text-sm font-medium text-[var(--pandan)]">Meant</p>
           <p
             key={`m-${i}`}
-            className="tl-swap mt-1 text-[5.5rem] font-semibold leading-none tracking-tight text-[var(--tinta)] sm:text-[7.5rem]"
+            className="tl-swap mt-1 text-[clamp(4.5rem,22vw,5.5rem)] font-semibold leading-none tracking-tight text-[var(--tinta)] sm:text-[7.5rem]"
           >
             {ex.meant}
           </p>
         </div>
       </div>
 
-      <p className="mt-8 min-h-[3rem] max-w-[34ch] leading-relaxed text-[var(--tinta)]/80">{ex.note}</p>
+      <p className="mt-6 min-h-[3rem] max-w-[34ch] sm:mt-8 leading-relaxed text-[var(--tinta)]/80">{ex.note}</p>
 
       <div role="group" aria-label="Choose an example" className="mt-6 flex flex-wrap gap-2">
         {EXAMPLES.map((e, idx) => {
@@ -138,7 +138,7 @@ function WaitlistForm() {
 
   if (status === "success") {
     return (
-      <div role="status" className="tl-swap rounded-[28px] bg-white p-8 sm:p-10">
+      <div role="status" className="tl-swap rounded-[28px] bg-white p-6 sm:p-10">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--pandan)]">
           <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden="true">
             <path
@@ -175,7 +175,7 @@ function WaitlistForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="rounded-[28px] bg-white p-8 sm:p-10">
+    <form onSubmit={onSubmit} noValidate className="rounded-[28px] bg-white p-6 sm:p-10">
       <HoneypotField />
       <fieldset>
         <legend className="text-sm font-medium text-[var(--abo)]">I&apos;m joining as a</legend>
@@ -186,7 +186,7 @@ function WaitlistForm() {
               <label
                 key={r.id}
                 className={[
-                  "cursor-pointer rounded-full py-2.5 text-center text-sm font-semibold transition-colors duration-150 sm:text-base",
+                  "cursor-pointer rounded-full px-1 py-3 text-center text-sm sm:py-2.5 font-semibold transition-colors duration-150 sm:text-base",
                   "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-[var(--pandan)]",
                   on ? "bg-white text-[var(--pandan)] shadow-[0_1px_2px_rgba(19,38,31,0.12)]" : "text-[var(--tinta)]/70 hover:text-[var(--tinta)]",
                 ].join(" ")}
@@ -290,19 +290,19 @@ export default function Home() {
       {/* Hero */}
       <section
         id="top"
-        className="mx-auto grid max-w-6xl items-center gap-16 px-6 pb-28 pt-16 sm:px-10 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-40 lg:pt-24"
+        className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-8 sm:gap-16 sm:px-10 sm:pb-28 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-40 lg:pt-24"
       >
         <div>
-          <h1 className="max-w-[14ch] text-[3rem] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem]">
+          <h1 className="max-w-[14ch] text-balance text-[clamp(2.5rem,11vw,3rem)] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem]">
             An independent lab for open Filipino AI.
           </h1>
-          <p className="mt-8 max-w-[40ch] text-lg leading-relaxed text-[var(--abo)] sm:text-xl">
+          <p className="mt-6 max-w-[40ch] text-lg leading-relaxed sm:mt-8 text-[var(--abo)] sm:text-xl">
             We release models, datasets, and tools anyone can use. First up: speech that
             today&apos;s AI gets wrong.
           </p>
           <a
             href="#waitlist"
-            className={`mt-10 inline-flex h-14 items-center rounded-2xl bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
+            className={`mt-8 flex h-14 w-full items-center justify-center rounded-2xl sm:mt-10 sm:inline-flex sm:w-auto bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
           >
             Join the waitlist
           </a>
@@ -312,21 +312,21 @@ export default function Home() {
       </section>
 
       {/* Why */}
-      <section className="mx-auto max-w-6xl px-6 pb-28 sm:px-10 lg:pb-40">
-        <p className="max-w-[24ch] text-[2rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.75rem]">
+      <section className="mx-auto max-w-6xl px-5 pb-20 sm:px-10 sm:pb-28 lg:pb-40">
+        <p className="max-w-[24ch] text-[1.75rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.75rem]">
           Most speech AI is trained on clear, standard English. Speech after a stroke, with a cleft
           palate, or in therapy gets treated as noise.
         </p>
-        <p className="mt-8 max-w-[48ch] text-lg leading-relaxed text-[var(--abo)]">
+        <p className="mt-6 max-w-[48ch] text-lg sm:mt-8 leading-relaxed text-[var(--abo)]">
           Our first project builds what Filipino clinicians and developers are missing, in the
           open. Tagalog first, then Cebuano, Ilocano, and Hiligaynon.
         </p>
       </section>
 
       {/* What we're building */}
-      <section id="building" className="mx-auto max-w-6xl scroll-mt-6 px-6 pb-28 sm:px-10 lg:pb-40">
+      <section id="building" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">What we release</h2>
-        <div className="mt-12 grid gap-12 md:grid-cols-3 md:gap-10">
+        <div className="mt-8 grid gap-8 sm:mt-12 sm:gap-12 md:grid-cols-3 md:gap-10">
           {BUILDING.map((b) => (
             <div key={b.title}>
               <h3 className="text-xl font-semibold">{b.title}</h3>
@@ -337,29 +337,29 @@ export default function Home() {
       </section>
 
       {/* Roadmap */}
-      <section id="roadmap" className="mx-auto max-w-6xl scroll-mt-6 px-6 pb-28 sm:px-10 lg:pb-40">
+      <section id="roadmap" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">Where the speech project is</h2>
-        <ol className="mt-12 grid gap-10 md:grid-cols-4 md:gap-8">
+        <ol className="mt-8 grid sm:mt-12 md:grid-cols-4 md:gap-8">
           {ROADMAP.map((s, i) => (
-            <li key={s.title} className="border-t-2 pt-6" style={{ borderColor: s.now ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}>
+            <li key={s.title} className="border-l-2 pb-8 pl-5 last:pb-0 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-6" style={{ borderColor: s.now ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}>
               <p className={`text-sm font-medium ${s.now ? "text-[var(--pandan)]" : "text-[var(--abo)]"}`}>
                 {s.now ? "Now" : `Step ${i + 1}`}
               </p>
-              <h3 className="mt-2 text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 leading-relaxed text-[var(--abo)]">{s.body}</p>
+              <h3 className="mt-1 text-lg font-semibold md:mt-2">{s.title}</h3>
+              <p className="mt-1 leading-relaxed text-[var(--abo)] md:mt-2">{s.body}</p>
             </li>
           ))}
         </ol>
       </section>
 
       {/* Waitlist */}
-      <section id="waitlist" className="scroll-mt-6 bg-[var(--mint)]">
-        <div className="mx-auto grid max-w-6xl items-center gap-14 px-6 py-28 sm:px-10 lg:grid-cols-2 lg:gap-20 lg:py-36">
+      <section id="waitlist" className="scroll-mt-18 bg-[var(--mint)] sm:scroll-mt-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:gap-14 sm:px-10 sm:py-28 lg:grid-cols-2 lg:gap-20 lg:py-36">
           <div>
-            <h2 className="max-w-[14ch] text-[2.5rem] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
+            <h2 className="max-w-[14ch] text-[clamp(2.25rem,10vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
               Help build it from day zero.
             </h2>
-            <p className="mt-6 max-w-[38ch] text-lg leading-relaxed text-[var(--tinta)]/70">
+            <p className="mt-5 max-w-[38ch] text-lg leading-relaxed text-[var(--tinta)]/70 sm:mt-6">
               <Brand /> is independent and run by one developer, in public. Join to follow
               along or to help.
             </p>

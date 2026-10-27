@@ -61,7 +61,7 @@ function renderLicense(md: string) {
 
 export default function LicensePage() {
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-6 pb-28 pt-12 sm:px-10 lg:pb-40 lg:pt-20">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
       <h1 className="text-[2.5rem] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">License</h1>
       <p className="mt-6 max-w-[48ch] text-lg leading-relaxed text-[var(--abo)]">
         The code for this website is under the Functional Source License 1.1, with Apache 2.0 as

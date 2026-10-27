@@ -22,25 +22,30 @@ export function Brand({ children = "tinig labs" }: { children?: string }) {
 export const focusRing =
   "focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--pandan)]";
 
+export function LogoMark({ className = "h-8 w-8" }: { className?: string }) {
+  return (
+    // logo.svg has unfilled (black) paths; masking lets it take the ink color
+    <span
+      aria-hidden="true"
+      className={`${className} block shrink-0 bg-[var(--tinta)]`}
+      style={{
+        maskImage: "url(/logo.svg)",
+        WebkitMaskImage: "url(/logo.svg)",
+        maskSize: "contain",
+        WebkitMaskSize: "contain",
+        maskRepeat: "no-repeat",
+        WebkitMaskRepeat: "no-repeat",
+        maskPosition: "center",
+        WebkitMaskPosition: "center",
+      }}
+    />
+  );
+}
+
 export function Wordmark({ size = "md" }: { size?: "md" | "sm" }) {
-  const mark = size === "md" ? "h-8 w-8" : "h-7 w-7";
   return (
     <span className="flex items-center gap-2.5">
-      {/* logo.svg has unfilled (black) paths; masking lets it take the ink color */}
-      <span
-        aria-hidden="true"
-        className={`${mark} shrink-0 bg-[var(--tinta)]`}
-        style={{
-          maskImage: "url(/logo.svg)",
-          WebkitMaskImage: "url(/logo.svg)",
-          maskSize: "contain",
-          WebkitMaskSize: "contain",
-          maskRepeat: "no-repeat",
-          WebkitMaskRepeat: "no-repeat",
-          maskPosition: "center",
-          WebkitMaskPosition: "center",
-        }}
-      />
+      <LogoMark className={size === "md" ? "h-8 w-8" : "h-7 w-7"} />
       <span
         className={`${montserrat.className} ${size === "md" ? "text-lg" : "text-base"} font-semibold tracking-[-0.02em]`}
       >
