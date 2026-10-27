@@ -7,7 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "build:api": "npm --prefix api run build",
     "dev:swa": "npm run build:api && npx --yes @azure/static-web-apps-cli@2.1.0 start tiniglabs"
   },
