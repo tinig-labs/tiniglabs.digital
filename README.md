@@ -37,9 +37,12 @@ The lab's first project is speech recognition for Filipino voices that today's A
 | Page | What it does |
 |---|---|
 | `/` | Explains the lab and the speech project, with a Said/Meant demo of common speech errors and the waitlist signup |
-| `/blog` | talâ, the blog. Coming soon, with an email signup for the first post. |
+| `/blog` | talâ, the blog: the list of posts and an email signup |
+| `/blog/<slug>` | One page per post, listed in `app/blog/posts.ts` |
 | `/license`, `/terms`, `/privacy` | License, Terms of Service, and Privacy Policy |
 | `/waitlist/unsubscribe`, `/blog/unsubscribe` | Separate unsubscribe pages for the waitlist and the blog, linked from every email |
+
+The speech corpus, where people record and review clips, is a separate app at [collect.tiniglabs.digital](https://collect.tiniglabs.digital).
 
 The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which saves the signup in Azure Table Storage and sends a confirmation through Azure Communication Services.
 
