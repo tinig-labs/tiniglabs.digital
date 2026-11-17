@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { Brand } from "../_components/brand";
+import Link from "next/link";
+import { Brand, focusRing } from "../_components/brand";
+import { POSTS, formatDate } from "./posts";
 import { SubscribeForm } from "./subscribe-form";
 import { TalaWord } from "./tala-word";
 
 const title = "talâ, the tinig labs blog";
-const description = "Notes from an independent lab building open Filipino AI. Coming soon.";
+const description = "Notes from an independent lab building open Filipino AI.";
 
 export const metadata: Metadata = {
   title,
@@ -40,8 +42,8 @@ export default function BlogPage() {
             Same spelling, two words. We named the blog after the note.
           </p>
           <p className="mt-6 max-w-[42ch] text-lg leading-relaxed text-[var(--abo)]">
-            Talâ is where <Brand /> will write up what it learns, from collecting data to releasing
-            models.
+            Talâ is where <Brand /> writes up what it learns, from collecting data to releasing
+            models. Subscribe and new posts come straight to your inbox.
           </p>
           <div className="mt-8 max-w-[30rem] sm:mt-10">
             <SubscribeForm />
@@ -50,12 +52,22 @@ export default function BlogPage() {
 
         <div className="lg:pt-3">
           <h2 className="text-lg font-semibold">Posts</h2>
-          <div className="mt-6 border-t border-[var(--tinta)]/10 pt-8">
-            <p className="text-2xl font-medium tracking-[-0.01em]">Nothing here yet. Stay tuned.</p>
-            <p className="mt-2 max-w-[36ch] leading-relaxed text-[var(--abo)]">
-              Subscribe and the first post comes straight to your inbox.
-            </p>
-          </div>
+          <ul className="mt-6 border-t border-[var(--tinta)]/10">
+            {POSTS.map((p) => (
+              <li key={p.slug} className="border-b border-[var(--tinta)]/10 py-8">
+                <p className="text-sm font-medium text-[var(--abo)]">
+                  <time dateTime={p.date}>{formatDate(p.date)}</time>
+                </p>
+                <Link
+                  href={`/blog/${p.slug}`}
+                  className={`mt-2 block rounded-sm text-2xl font-medium tracking-[-0.01em] hover:text-[var(--pandan)] ${focusRing}`}
+                >
+                  {p.title}
+                </Link>
+                <p className="mt-2 max-w-[42ch] leading-relaxed text-[var(--abo)]">{p.summary}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
     </main>

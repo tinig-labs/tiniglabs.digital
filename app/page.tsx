@@ -5,6 +5,7 @@ import { useId, useState, type FormEvent } from "react";
 import { Brand, focusRing } from "./_components/brand";
 import { HoneypotField } from "./_components/honeypot-field";
 import { postSignup, type Role } from "./_components/signup";
+import { CORPUS_URL } from "./_components/site";
 
 /* ------------------------------------------------------------------ */
 /* Hero: said / meant                                                  */
@@ -258,18 +259,26 @@ function WaitlistForm() {
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-const BUILDING = [
-  { title: "Open datasets", body: "Collected with consent and documented, so anyone can check how they were made." },
+const BUILDING: { title: string; body: string; link?: { href: string; label: string } }[] = [
+  {
+    title: "Open datasets",
+    body: "Collected with consent and documented, so anyone can check how they were made.",
+    link: { href: CORPUS_URL, label: "Contribute recordings" },
+  },
   { title: "Open models", body: "Released with weights, training code, and honest benchmarks." },
   { title: "Tools", body: "Apps and APIs built on our models, for people who'd never touch a model." },
 ];
 
-const ROADMAP = [
-  { title: "Groundwork", body: "Consent and recording protocol, reviewed by specialists.", now: true },
-  { title: "Pilot dataset", body: "Tagalog syllables and words." },
+type Step = { title: string; body: string; state?: "done" | "now"; href?: string };
+
+const ROADMAP: Step[] = [
+  { title: "Groundwork", body: "Consent and recording protocol.", state: "done" },
+  { title: "Pilot dataset", body: "Tagalog syllables and words, recording in closed beta.", state: "now", href: CORPUS_URL },
   { title: "Baseline model", body: "Open weights and a public benchmark." },
   { title: "Tools", body: "Practice app and developer API." },
 ];
+
+const linkClass = `rounded-sm font-semibold text-[var(--pandan)] underline-offset-4 hover:underline ${focusRing}`;
 
 export default function Home() {
   return (
@@ -300,12 +309,24 @@ export default function Home() {
             We release models, datasets, and tools anyone can use. First up: speech that
             today&apos;s AI gets wrong.
           </p>
-          <a
-            href="#waitlist"
-            className={`mt-8 flex h-14 w-full items-center justify-center rounded-2xl sm:mt-10 sm:inline-flex sm:w-auto bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
-          >
-            Join the waitlist
-          </a>
+          <p className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--mint)] px-3.5 py-1.5 text-sm font-semibold text-[var(--pandan)] sm:mt-10">
+            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
+            Speech corpus now in closed beta
+          </p>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a
+              href={CORPUS_URL}
+              className={`flex h-14 w-full items-center justify-center rounded-2xl sm:inline-flex sm:w-auto bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
+            >
+              Lend your voice
+            </a>
+            <a
+              href="#waitlist"
+              className={`flex h-14 w-full items-center justify-center rounded-2xl sm:inline-flex sm:w-auto px-7 text-base font-semibold text-[var(--pandan)] transition-colors hover:bg-[var(--mint)] ${focusRing}`}
+            >
+              Join the waitlist
+            </a>
+          </div>
         </div>
 
         <SaidMeant />
@@ -331,6 +352,11 @@ export default function Home() {
             <div key={b.title}>
               <h3 className="text-xl font-semibold">{b.title}</h3>
               <p className="mt-3 max-w-[32ch] leading-relaxed text-[var(--abo)]">{b.body}</p>
+              {b.link && (
+                <a href={b.link.href} className={`mt-4 inline-block ${linkClass}`}>
+                  {b.link.label} <span aria-hidden="true">→</span>
+                </a>
+              )}
             </div>
           ))}
         </div>
@@ -340,15 +366,29 @@ export default function Home() {
       <section id="roadmap" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">Where the speech project is</h2>
         <ol className="mt-8 grid sm:mt-12 md:grid-cols-4 md:gap-8">
-          {ROADMAP.map((s, i) => (
-            <li key={s.title} className="border-l-2 pb-8 pl-5 last:pb-0 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-6" style={{ borderColor: s.now ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}>
-              <p className={`text-sm font-medium ${s.now ? "text-[var(--pandan)]" : "text-[var(--abo)]"}`}>
-                {s.now ? "Now" : `Step ${i + 1}`}
-              </p>
-              <h3 className="mt-1 text-lg font-semibold md:mt-2">{s.title}</h3>
-              <p className="mt-1 leading-relaxed text-[var(--abo)] md:mt-2">{s.body}</p>
-            </li>
-          ))}
+          {ROADMAP.map((s, i) => {
+            const now = s.state === "now";
+            const done = s.state === "done";
+            return (
+              <li
+                key={s.title}
+                aria-current={now ? "step" : undefined}
+                className="border-l-2 pb-8 pl-5 last:pb-0 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-6"
+                style={{ borderColor: now || done ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}
+              >
+                <p className={`text-sm font-medium ${now ? "text-[var(--pandan)]" : "text-[var(--abo)]"}`}>
+                  {now ? "Now" : done ? "Done" : `Step ${i + 1}`}
+                </p>
+                <h3 className="mt-1 text-lg font-semibold md:mt-2">{s.title}</h3>
+                <p className="mt-1 leading-relaxed text-[var(--abo)] md:mt-2">{s.body}</p>
+                {s.href && (
+                  <a href={s.href} className={`mt-3 inline-block ${linkClass}`}>
+                    Start recording <span aria-hidden="true">→</span>
+                  </a>
+                )}
+              </li>
+            );
+          })}
         </ol>
       </section>
 

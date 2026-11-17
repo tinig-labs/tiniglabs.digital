@@ -4,10 +4,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Wordmark, focusRing } from "./brand";
+import { CORPUS_URL } from "./site";
 
 const MENU_LINKS = [
   { label: "Home", href: "/" },
   { label: "Blog", href: "/blog" },
+  { label: "Record", href: CORPUS_URL },
 ];
 
 export function SiteHeader() {
@@ -86,6 +88,14 @@ export function SiteHeader() {
               </Link>
             </li>
             <li>
+              <a
+                href={CORPUS_URL}
+                className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--tinta)]/70 transition-colors hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
+              >
+                Record
+              </a>
+            </li>
+            <li>
               {/* Waitlist lives on the home page, so this works from any route */}
               <Link
                 href="/#waitlist"
@@ -125,22 +135,30 @@ export function SiteHeader() {
           <nav aria-label="Mobile">
             <ul>
               {MENU_LINKS.map((l, i) => {
-                const current = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+                const external = !l.href.startsWith("/");
+                const current = external ? false : l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
+                const className = [
+                  "flex items-center justify-between rounded-2xl py-3 text-[2.5rem] font-medium leading-tight tracking-[-0.03em]",
+                  current ? "text-[var(--pandan)]" : "text-[var(--tinta)]",
+                  focusRing,
+                ].join(" ");
                 return (
                   <li key={l.href} className="tl-sheet-item" style={{ animationDelay: `${60 + i * 50}ms` }}>
-                    <Link
-                      href={l.href}
-                      onClick={close}
-                      aria-current={current ? "page" : undefined}
-                      className={[
-                        "flex items-center justify-between rounded-2xl py-3 text-[2.5rem] font-medium leading-tight tracking-[-0.03em]",
-                        current ? "text-[var(--pandan)]" : "text-[var(--tinta)]",
-                        focusRing,
-                      ].join(" ")}
-                    >
-                      {l.label}
-                      {current && <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--pandan)]" />}
-                    </Link>
+                    {external ? (
+                      <a href={l.href} onClick={close} className={className}>
+                        {l.label}
+                      </a>
+                    ) : (
+                      <Link
+                        href={l.href}
+                        onClick={close}
+                        aria-current={current ? "page" : undefined}
+                        className={className}
+                      >
+                        {l.label}
+                        {current && <span aria-hidden="true" className="h-2.5 w-2.5 rounded-full bg-[var(--pandan)]" />}
+                      </Link>
+                    )}
                   </li>
                 );
               })}

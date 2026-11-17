@@ -55,7 +55,8 @@ Next.js 16 changed many APIs. Before writing Next code, read the matching guide 
 ```
 app/
   page.tsx               Home page, with the Said/Meant demo and the waitlist form
-  blog/                  talâ, the blog (coming soon) and its subscribe form
+  blog/                  talâ, the blog, its subscribe form, and posts.ts (the list of posts)
+  blog/<slug>/           One folder per post; add the post to posts.ts too
   license/ terms/ privacy/   Legal pages; /license renders LICENSE.md at build time
   waitlist/unsubscribe/  Leave the waitlist (from the link in waitlist emails)
   blog/unsubscribe/      Unsubscribe from talâ (from the link in blog emails)
