@@ -1,4 +1,5 @@
 // Every published post, newest first. The blog index and the sitemap read this list.
+// Each post with its own opengraph-image.tsx needs a Content-Type route in public/staticwebapp.config.json.
 export type Post = { slug: string; title: string; date: string; summary: string };
 
 export const POSTS: Post[] = [

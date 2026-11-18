@@ -2,26 +2,36 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { Brand, focusRing } from "../../_components/brand";
-import { CORPUS_URL } from "../../_components/site";
+import { CORPUS_URL, ORGANIZATION, SITE_URL, jsonLd, pageMetadata } from "../../_components/site";
 import { formatDate, getPost } from "../posts";
 import { SubscribeForm } from "../subscribe-form";
 
 const post = getPost("speech-corpus-closed-beta");
 const url = `/blog/${post.slug}/`;
 
-export const metadata: Metadata = {
-  title: `${post.title} | talâ`,
+export const metadata: Metadata = pageMetadata({
+  title: { absolute: `${post.title} | talâ` },
+  ogTitle: post.title,
   description: post.summary,
-  alternates: { canonical: url },
-  openGraph: {
-    type: "article",
-    siteName: "tinig labs",
-    title: post.title,
-    description: post.summary,
-    url,
-    publishedTime: post.date,
-  },
-  twitter: { card: "summary", title: post.title, description: post.summary },
+  path: url,
+  type: "article",
+  publishedTime: post.date,
+  image: { url: `${url}opengraph-image`, width: 1200, height: 630, alt: post.title },
+});
+
+const POST_JSON_LD = {
+  "@type": "BlogPosting",
+  headline: post.title,
+  description: post.summary,
+  datePublished: post.date,
+  dateModified: post.date,
+  inLanguage: "en-PH",
+  url: `${SITE_URL}${url}`,
+  mainEntityOfPage: `${SITE_URL}${url}`,
+  image: `${SITE_URL}${url}opengraph-image`,
+  author: { "@id": ORGANIZATION["@id"] },
+  publisher: { "@id": ORGANIZATION["@id"] },
+  isPartOf: { "@type": "Blog", name: "talâ", url: `${SITE_URL}/blog/` },
 };
 
 const link = `rounded-sm font-medium text-[var(--pandan)] underline underline-offset-4 hover:text-[#185A42] ${focusRing}`;
@@ -37,6 +47,7 @@ function P({ children }: { children: ReactNode }) {
 export default function ClosedBetaPost() {
   return (
     <main className="w-full flex-1">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(POST_JSON_LD)} />
       <article className="mx-auto max-w-[42rem] px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pt-20">
         <Link href="/blog" className={`rounded-sm text-sm font-semibold text-[var(--abo)] hover:text-[var(--pandan)] ${focusRing}`}>
           <span aria-hidden="true">←</span> talâ
