@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import type { Metadata } from "next";
+import { pageMetadata } from "../_components/site";
 import type { ReactNode } from "react";
 import { Brand } from "../_components/brand";
 
@@ -8,13 +9,7 @@ const title = "License";
 const description =
   "The tinig labs website code is available under the Functional Source License 1.1, with Apache 2.0 as the future license.";
 
-export const metadata: Metadata = {
-  title: `${title} | tinig labs`,
-  description,
-  alternates: { canonical: "/license/" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/license/" },
-  twitter: { card: "summary", title, description },
-};
+export const metadata: Metadata = pageMetadata({ title, description, path: "/license/" });
 
 // LICENSE.md at the repo root is the source of truth; the page renders it at build time
 const LICENSE = readFileSync(path.join(process.cwd(), "LICENSE.md"), "utf8");

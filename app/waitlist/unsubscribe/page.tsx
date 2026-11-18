@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { UnsubscribeForm } from "../../_components/unsubscribe-form";
 
 export const metadata: Metadata = {
-  title: "Leave the waitlist | tinig labs",
+  title: "Leave the waitlist",
+  alternates: { canonical: null },
   description: "Stop waitlist emails from tinig labs.",
   robots: { index: false, follow: false },
 };

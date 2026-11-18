@@ -1,17 +1,12 @@
 import type { Metadata } from "next";
+import { pageMetadata } from "../_components/site";
 import { Brand } from "../_components/brand";
 import { A, LegalPage, List, Mail, P, Section } from "../_components/legal";
 
 const title = "Terms of Service";
 const description = "The terms for using the tinig labs website, waitlist, and blog.";
 
-export const metadata: Metadata = {
-  title: `${title} | tinig labs`,
-  description,
-  alternates: { canonical: "/terms/" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/terms/" },
-  twitter: { card: "summary", title, description },
-};
+export const metadata: Metadata = pageMetadata({ title, description, path: "/terms/" });
 
 const CONTACT = "waitlist@tiniglabs.digital";
 

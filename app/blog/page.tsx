@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Brand, focusRing } from "../_components/brand";
+import { pageMetadata } from "../_components/site";
 import { POSTS, formatDate } from "./posts";
 import { SubscribeForm } from "./subscribe-form";
 import { TalaWord } from "./tala-word";
@@ -8,13 +9,12 @@ import { TalaWord } from "./tala-word";
 const title = "talâ, the tinig labs blog";
 const description = "Notes from an independent lab building open Filipino AI.";
 
-export const metadata: Metadata = {
-  title,
+export const metadata: Metadata = pageMetadata({
+  title: { absolute: title },
+  ogTitle: title,
   description,
-  alternates: { canonical: "/blog/" },
-  openGraph: { type: "website", siteName: "tinig labs", title, description, url: "/blog/" },
-  twitter: { card: "summary", title, description },
-};
+  path: "/blog/",
+});
 
 export default function BlogPage() {
   return (

@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { UnsubscribeForm } from "../../_components/unsubscribe-form";
 
 export const metadata: Metadata = {
-  title: "Unsubscribe from talâ | tinig labs",
+  title: "Unsubscribe from talâ",
+  alternates: { canonical: null },
   description: "Stop getting new talâ posts by email.",
   robots: { index: false, follow: false },
 };
