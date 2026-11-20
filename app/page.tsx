@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Brand, focusRing } from "./_components/brand";
 import { SaidMeant } from "./_components/said-meant";
-import { CORPUS_URL, SITE_NAME, pageMetadata } from "./_components/site";
+import { CORPUS_URL, NOTEBOOK_URL, SITE_NAME, pageMetadata } from "./_components/site";
 import { WaitlistForm } from "./_components/waitlist-form";
 
 export const metadata: Metadata = pageMetadata({
@@ -23,7 +24,11 @@ const BUILDING: { title: string; body: string; link?: { href: string; label: str
     link: { href: CORPUS_URL, label: "Contribute recordings" },
   },
   { title: "Open models", body: "Released with weights, training code, and honest benchmarks." },
-  { title: "Tools", body: "Apps and APIs built on our models, for people who'd never touch a model." },
+  {
+    title: "Tools",
+    body: "Apps and APIs built on our models. First: a recording notebook for speech-language pathologists.",
+    link: { href: NOTEBOOK_URL, label: "Try the notebook" },
+  },
 ];
 
 type Step = { title: string; body: string; state?: "done" | "now"; href?: string };
@@ -32,10 +37,13 @@ const ROADMAP: Step[] = [
   { title: "Groundwork", body: "Consent and recording protocol.", state: "done" },
   { title: "Pilot dataset", body: "Tagalog syllables and words, recording in closed beta.", state: "now", href: CORPUS_URL },
   { title: "Baseline model", body: "Open weights and a public benchmark." },
-  { title: "Tools", body: "Practice app and developer API." },
+  { title: "Tools", body: "Notebook for SLPs in closed beta. Practice app and developer API next." },
 ];
 
-const linkClass = `rounded-sm font-semibold text-[var(--pandan)] underline-offset-4 hover:underline ${focusRing}`;
+const pillClass =
+  "inline-flex items-center gap-2 rounded-full bg-[var(--mint)] px-3.5 py-1.5 text-sm font-semibold text-[var(--pandan)] transition-colors hover:bg-[#CDEBDD]";
+
+const linkClass =`rounded-sm font-semibold text-[var(--pandan)] underline-offset-4 hover:underline ${focusRing}`;
 
 export default function Home() {
   return (
@@ -66,10 +74,20 @@ export default function Home() {
             We release models, datasets, and tools anyone can use. First up: speech that
             today&apos;s AI gets wrong.
           </p>
-          <p className="mt-8 inline-flex items-center gap-2 rounded-full bg-[var(--mint)] px-3.5 py-1.5 text-sm font-semibold text-[var(--pandan)] sm:mt-10">
-            <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
-            Speech corpus now in closed beta
-          </p>
+          <ul aria-label="In closed beta" className="mt-8 flex flex-wrap gap-2 sm:mt-10">
+            <li>
+              <a href={CORPUS_URL} className={`${pillClass} ${focusRing}`}>
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
+                Speech corpus in closed beta
+              </a>
+            </li>
+            <li>
+              <Link href="/blog/notebook-closed-beta" className={`${pillClass} ${focusRing}`}>
+                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
+                Notebook for SLPs in closed beta
+              </Link>
+            </li>
+          </ul>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href={CORPUS_URL}

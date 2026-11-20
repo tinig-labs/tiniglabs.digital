@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { Brand, Wordmark, focusRing } from "./brand";
-import { CORPUS_URL } from "./site";
+import { CORPUS_URL, NOTEBOOK_URL } from "./site";
 
 const FOOTER_LINKS = [
   { label: "Blog", href: "/blog" },
   { label: "Speech corpus", href: CORPUS_URL },
+  { label: "Notebook", href: NOTEBOOK_URL },
   { label: "GitHub", href: "https://github.com/tinig-labs" },
   { label: "License", href: "/license" },
   { label: "Terms of Service", href: "/terms" },

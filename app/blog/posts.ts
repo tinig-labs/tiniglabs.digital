@@ -4,6 +4,12 @@ export type Post = { slug: string; title: string; date: string; summary: string 
 
 export const POSTS: Post[] = [
   {
+    slug: "notebook-closed-beta",
+    title: "The notebook for SLPs is open in closed beta",
+    date: "2026-11-20",
+    summary: "A recording notebook for speech-language pathologists: record, transcribe and track patient speech, encrypted on every device.",
+  },
+  {
     slug: "speech-corpus-closed-beta",
     title: "The speech corpus is open in closed beta",
     date: "2026-11-17",

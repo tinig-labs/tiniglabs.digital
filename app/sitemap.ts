@@ -6,7 +6,7 @@ import { POSTS } from "./blog/posts";
 export const dynamic = "force-static";
 
 // Bump when a page's content changes meaningfully
-const UPDATED = { home: "2026-11-18", legal: "2026-10-27" };
+const UPDATED = { home: "2026-11-20", legal: "2026-10-27" };
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
