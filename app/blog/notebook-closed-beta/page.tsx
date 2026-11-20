@@ -44,7 +44,7 @@ const POST_JSON_LD = {
     thumbnailUrl: `${SITE_URL}${POSTER}`,
     contentUrl: `${SITE_URL}${VIDEO}`,
     uploadDate: post.date,
-    duration: "PT1M30S",
+    duration: "PT1M27S",
   },
 };
 
