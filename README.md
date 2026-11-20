@@ -44,6 +44,8 @@ The lab's first project is speech recognition for Filipino voices that today's A
 
 The speech corpus, where people record and review clips, is a separate app at [collect.tiniglabs.digital](https://collect.tiniglabs.digital).
 
+The notebook for speech-language pathologists, where SLPs record, transcribe and track patient speech, is a separate app at [notebook.tiniglabs.digital](https://notebook.tiniglabs.digital).
+
 The site is static and hosted on Azure Static Web Apps. It has no cookies or analytics. The two signup forms post to a small Azure Functions API in `api/`, which saves the signup in Azure Table Storage and sends a confirmation through Azure Communication Services.
 
 ## Quick start

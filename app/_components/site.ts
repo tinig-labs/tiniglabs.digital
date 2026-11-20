@@ -6,6 +6,9 @@ export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://tiniglabs.d
 // The speech corpus app, where people record and review clips
 export const CORPUS_URL = "https://collect.tiniglabs.digital";
 
+// The recording notebook for speech-language pathologists
+export const NOTEBOOK_URL = "https://notebook.tiniglabs.digital";
+
 export const SITE_NAME = "tinig labs";
 export const GITHUB_URL = "https://github.com/tinig-labs";
 
@@ -66,7 +69,7 @@ export const ORGANIZATION = {
   url: `${SITE_URL}/`,
   logo: `${SITE_URL}/logo.svg`,
   description: "An independent lab releasing open models, datasets, and tools for Filipino speech.",
-  sameAs: [CORPUS_URL, GITHUB_URL],
+  sameAs: [CORPUS_URL, NOTEBOOK_URL, GITHUB_URL],
 } as const;
 
 /** Serialized JSON-LD for a <script type="application/ld+json">, with `<` escaped. */

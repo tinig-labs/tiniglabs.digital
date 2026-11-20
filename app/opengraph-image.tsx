@@ -9,7 +9,7 @@ export const contentType = "image/png";
 
 export default function Image() {
   return ogImage({
-    eyebrow: "Speech corpus now in closed beta",
+    eyebrow: "Speech corpus and notebook in closed beta",
     title: "An independent lab for open Filipino AI.",
     footer: "tiniglabs.digital",
   });

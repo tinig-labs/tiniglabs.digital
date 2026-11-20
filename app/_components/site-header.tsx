@@ -4,12 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Wordmark, focusRing } from "./brand";
-import { CORPUS_URL } from "./site";
+import { CORPUS_URL, NOTEBOOK_URL } from "./site";
 
 const MENU_LINKS = [
   { label: "Home", href: "/" },
   { label: "Blog", href: "/blog" },
   { label: "Record", href: CORPUS_URL },
+  { label: "Notebook", href: NOTEBOOK_URL },
 ];
 
 export function SiteHeader() {
@@ -93,6 +94,14 @@ export function SiteHeader() {
                 className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--tinta)]/70 transition-colors hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
               >
                 Record
+              </a>
+            </li>
+            <li>
+              <a
+                href={NOTEBOOK_URL}
+                className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--tinta)]/70 transition-colors hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
+              >
+                Notebook
               </a>
             </li>
             <li>
