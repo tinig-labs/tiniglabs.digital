@@ -6,7 +6,7 @@ import { POSTS } from "./blog/posts";
 export const dynamic = "force-static";
 
 // Bump when a page's content changes meaningfully
-const UPDATED = { home: "2026-11-20", legal: "2026-10-27" };
+const UPDATED = { home: "2026-11-21", brand: "2026-11-21", legal: "2026-10-27" };
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -18,6 +18,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "yearly" as const,
       priority: 0.6,
     })),
+    { url: `${SITE_URL}/brand/`, lastModified: UPDATED.brand, changeFrequency: "monthly", priority: 0.4 },
     { url: `${SITE_URL}/license/`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}/terms/`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.2 },
     { url: `${SITE_URL}/privacy/`, lastModified: UPDATED.legal, changeFrequency: "yearly", priority: 0.2 },

@@ -12,6 +12,12 @@ export default function manifest(): MetadataRoute.Manifest {
     display: "browser",
     background_color: "#F9FBFA",
     theme_color: "#1F6B4F",
-    icons: [{ src: "/favicon.ico", sizes: "any", type: "image/x-icon" }],
+    // The Echo t app icon (public/brand/), see BRAND.md
+    icons: [
+      { src: "/favicon.ico", sizes: "16x16 32x32 48x48", type: "image/x-icon" },
+      { src: "/brand/tinig-labs-app-icon.svg", sizes: "any", type: "image/svg+xml" },
+      { src: "/brand/tinig-labs-app-icon-180.png", sizes: "180x180", type: "image/png" },
+      { src: "/brand/tinig-labs-app-icon-512.png", sizes: "512x512", type: "image/png" },
+    ],
   };
 }

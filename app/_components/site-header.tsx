@@ -3,15 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Wordmark, focusRing } from "./brand";
+import { type Product, ProductMark, Wordmark, focusRing } from "./brand";
 import { CORPUS_URL, NOTEBOOK_URL } from "./site";
 
-const MENU_LINKS = [
+const MENU_LINKS: { label: string; href: string; product?: Product }[] = [
   { label: "Home", href: "/" },
   { label: "Blog", href: "/blog" },
-  { label: "Record", href: CORPUS_URL },
-  { label: "Notebook", href: NOTEBOOK_URL },
+  { label: "Record", href: CORPUS_URL, product: "corpus" },
+  { label: "Notebook", href: NOTEBOOK_URL, product: "notebook" },
 ];
+
+const navLink =
+  "flex h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition-colors";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -78,7 +81,7 @@ export function SiteHeader() {
                 href="/blog"
                 aria-current={onBlog ? "page" : undefined}
                 className={[
-                  "block rounded-full px-4 py-2 text-sm font-semibold transition-colors",
+                  navLink,
                   onBlog
                     ? "bg-[var(--mint)] text-[var(--tinta)]"
                     : "text-[var(--tinta)]/70 hover:bg-[var(--mint)] hover:text-[var(--tinta)]",
@@ -91,16 +94,18 @@ export function SiteHeader() {
             <li>
               <a
                 href={CORPUS_URL}
-                className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--tinta)]/70 transition-colors hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
+                className={`${navLink} pl-2.5 text-[var(--tinta)]/70 hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
               >
+                <ProductMark product="corpus" />
                 Record
               </a>
             </li>
             <li>
               <a
                 href={NOTEBOOK_URL}
-                className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--tinta)]/70 transition-colors hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
+                className={`${navLink} pl-2.5 text-[var(--tinta)]/70 hover:bg-[var(--mint)] hover:text-[var(--tinta)] ${focusRing}`}
               >
+                <ProductMark product="notebook" />
                 Notebook
               </a>
             </li>
@@ -108,7 +113,7 @@ export function SiteHeader() {
               {/* Waitlist lives on the home page, so this works from any route */}
               <Link
                 href="/#waitlist"
-                className={`block rounded-full px-4 py-2 text-sm font-semibold text-[var(--pandan)] transition-colors hover:bg-[var(--mint)] ${focusRing}`}
+                className={`${navLink} ml-2 bg-[var(--pandan)] px-5 text-white hover:bg-[#185A42] ${focusRing}`}
               >
                 Join the waitlist
               </Link>
@@ -147,7 +152,7 @@ export function SiteHeader() {
                 const external = !l.href.startsWith("/");
                 const current = external ? false : l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
                 const className = [
-                  "flex items-center justify-between rounded-2xl py-3 text-[2.5rem] font-medium leading-tight tracking-[-0.03em]",
+                  "flex items-center justify-between gap-4 rounded-2xl py-3 text-[2.5rem] font-medium leading-tight tracking-[-0.03em]",
                   current ? "text-[var(--pandan)]" : "text-[var(--tinta)]",
                   focusRing,
                 ].join(" ");
@@ -156,6 +161,7 @@ export function SiteHeader() {
                     {external ? (
                       <a href={l.href} onClick={close} className={className}>
                         {l.label}
+                        {l.product && <ProductMark product={l.product} size={32} />}
                       </a>
                     ) : (
                       <Link
@@ -178,13 +184,13 @@ export function SiteHeader() {
             <Link
               href="/#waitlist"
               onClick={close}
-              className={`flex h-14 w-full items-center justify-center rounded-2xl bg-[var(--pandan)] text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
+              className={`flex h-14 w-full items-center justify-center rounded-full bg-[var(--pandan)] text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
             >
               Join the waitlist
             </Link>
             <a
               href="https://github.com/tinig-labs"
-              className={`mt-3 flex h-12 w-full items-center justify-center rounded-2xl text-base font-semibold text-[var(--tinta)]/80 transition-colors hover:bg-[var(--mint)] ${focusRing}`}
+              className={`mt-3 flex h-12 w-full items-center justify-center rounded-full text-base font-semibold text-[var(--tinta)]/80 transition-colors hover:bg-[var(--mint)] ${focusRing}`}
             >
               GitHub
             </a>

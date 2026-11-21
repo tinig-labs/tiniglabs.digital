@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Brand, focusRing } from "../_components/brand";
+import { Brand, ProductMark, focusRing } from "../_components/brand";
 import { pageMetadata } from "../_components/site";
 import { POSTS, formatDate } from "./posts";
 import { SubscribeForm } from "./subscribe-form";
@@ -55,7 +55,8 @@ export default function BlogPage() {
           <ul className="mt-6 border-t border-[var(--tinta)]/10">
             {POSTS.map((p) => (
               <li key={p.slug} className="border-b border-[var(--tinta)]/10 py-8">
-                <p className="text-sm font-medium text-[var(--abo)]">
+                <p className="flex items-center gap-3 text-sm font-medium text-[var(--abo)]">
+                  {p.product && <ProductMark product={p.product} />}
                   <time dateTime={p.date}>{formatDate(p.date)}</time>
                 </p>
                 <Link

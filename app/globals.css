@@ -1,12 +1,14 @@
 @import "tailwindcss";
 
-/* Palette: pandan, mint, milk, ink. Shared by every page. */
+/* Palette: pandan, mint, milk, ink, and dahon for accents on pandan. Shared by every page.
+   See BRAND.md. Never use dahon for text on gatas: the contrast is too low. */
 :root {
   --gatas: #F9FBFA;
   --tinta: #13261F;
   --abo: #5F6F68;
   --pandan: #1F6B4F;
   --mint: #E2F3EA;
+  --dahon: #7FC8A4;
 }
 
 /* Mobile menu: three bars that fold into an X, and a sheet that settles in once */

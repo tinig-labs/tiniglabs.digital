@@ -21,7 +21,7 @@ export function SaidMeant() {
   const ex = EXAMPLES[i];
 
   return (
-    <div className="rounded-[28px] bg-[var(--mint)] p-6 sm:p-10">
+    <div className="rounded-3xl bg-[var(--mint)] p-6 sm:p-8">
       <div aria-live="polite" className="grid grid-cols-2 gap-6">
         <div>
           <p className="text-sm font-medium text-[var(--abo)]">Said</p>

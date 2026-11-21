@@ -68,7 +68,7 @@ export function WaitlistForm() {
 
   if (status === "success") {
     return (
-      <div role="status" className="tl-swap rounded-[28px] bg-white p-6 sm:p-10">
+      <div role="status" className="tl-swap rounded-3xl bg-white p-6 sm:p-8">
         <span className="grid h-11 w-11 place-items-center rounded-full bg-[var(--pandan)]">
           <svg viewBox="0 0 20 20" className="h-5 w-5" aria-hidden="true">
             <path
@@ -105,7 +105,7 @@ export function WaitlistForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="rounded-[28px] bg-white p-6 sm:p-10">
+    <form onSubmit={onSubmit} noValidate className="rounded-3xl bg-white p-6 sm:p-8">
       <HoneypotField />
       <fieldset>
         <legend className="text-sm font-medium text-[var(--abo)]">I&apos;m joining as a</legend>
@@ -155,7 +155,7 @@ export function WaitlistForm() {
         aria-describedby={error ? `${emailId}-err` : undefined}
         disabled={submitting}
         className={[
-          "mt-2 h-14 w-full rounded-2xl border bg-[var(--gatas)] px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
+          "mt-2 h-14 w-full rounded-full border bg-[var(--gatas)] px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
           "focus:border-[var(--pandan)] focus:outline-none focus:ring-4 focus:ring-[var(--pandan)]/15 disabled:opacity-60",
           error ? "border-[#B4234A]" : "border-[var(--tinta)]/10",
         ].join(" ")}
@@ -169,7 +169,7 @@ export function WaitlistForm() {
       <button
         type="submit"
         disabled={submitting}
-        className="mt-6 h-14 w-full rounded-2xl bg-[var(--pandan)] text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70"
+        className="mt-6 h-14 w-full rounded-full bg-[var(--pandan)] text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70"
       >
         {submitting ? "Joining…" : "Join the waitlist"}
       </button>

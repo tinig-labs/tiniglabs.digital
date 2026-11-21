@@ -46,8 +46,8 @@ const COLS = [
 
 function DataTable() {
   return (
-    <div className="rounded-[28px] bg-[var(--mint)] p-3">
-      <div className="rounded-[20px] bg-white px-6 py-2 sm:px-8">
+    <div className="rounded-3xl bg-[var(--mint)] p-3">
+      <div className="rounded-2xl bg-white px-6 py-2 sm:px-8">
         <table className="w-full text-left">
           <caption className="sr-only">Data tinig labs collects</caption>
           <thead className="hidden md:table-header-group">
