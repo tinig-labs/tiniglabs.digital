@@ -40,7 +40,7 @@ function readLink(list: UnsubscribeCopy["list"]) {
 }
 
 const button =
-  "h-14 rounded-2xl bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70";
+  "h-14 rounded-full bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70";
 const heading = "max-w-[18ch] text-[2.5rem] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]";
 const lede = "mt-6 max-w-[44ch] text-lg leading-relaxed text-[var(--abo)]";
 const failed = "Couldn't unsubscribe you right now. Try again in a few minutes.";
@@ -109,9 +109,9 @@ export function UnsubscribeForm({ copy }: { copy: UnsubscribeCopy }) {
     content = (
       <>
         <h1 className={heading}>{copy.heading}</h1>
-        <div className="mt-10 max-w-[34rem] rounded-[28px] bg-[var(--mint)] p-3">
+        <div className="mt-10 max-w-[34rem] rounded-3xl bg-[var(--mint)] p-3">
           <div className="px-6 pb-5 pt-4 sm:px-8">{copy.feature}</div>
-          <div className="rounded-[20px] bg-white p-7 sm:p-9">
+          <div className="rounded-2xl bg-white p-6 sm:p-8">
             <p className="text-sm font-medium text-[var(--abo)]">Email</p>
             <p className="mt-1 break-all text-xl font-semibold">{target.email}</p>
             <p className="mt-4 leading-relaxed text-[var(--abo)]">{copy.explain}</p>

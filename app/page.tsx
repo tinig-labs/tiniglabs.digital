@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Brand, focusRing } from "./_components/brand";
+import { Brand, LogoMark, type Product, ProductLockup, ProductMark } from "./_components/brand";
 import { SaidMeant } from "./_components/said-meant";
 import { CORPUS_URL, NOTEBOOK_URL, SITE_NAME, pageMetadata } from "./_components/site";
+import { buttonBlock, buttonPrimary, buttonSecondary, card, pill, textLink } from "./_components/ui";
 import { WaitlistForm } from "./_components/waitlist-form";
 
 export const metadata: Metadata = pageMetadata({
@@ -17,16 +18,18 @@ export const metadata: Metadata = pageMetadata({
 /* Page                                                                */
 /* ------------------------------------------------------------------ */
 
-const BUILDING: { title: string; body: string; link?: { href: string; label: string } }[] = [
+const BUILDING: { title: string; body: string; product?: Product; link?: { href: string; label: string } }[] = [
   {
     title: "Open datasets",
     body: "Collected with consent and documented, so anyone can check how they were made.",
+    product: "corpus",
     link: { href: CORPUS_URL, label: "Contribute recordings" },
   },
   { title: "Open models", body: "Released with weights, training code, and honest benchmarks." },
   {
     title: "Tools",
     body: "Apps and APIs built on our models. First: a recording notebook for speech-language pathologists.",
+    product: "notebook",
     link: { href: NOTEBOOK_URL, label: "Try the notebook" },
   },
 ];
@@ -40,10 +43,6 @@ const ROADMAP: Step[] = [
   { title: "Tools", body: "Notebook for SLPs in closed beta. Practice app and developer API next." },
 ];
 
-const pillClass =
-  "inline-flex items-center gap-2 rounded-full bg-[var(--mint)] px-3.5 py-1.5 text-sm font-semibold text-[var(--pandan)] transition-colors hover:bg-[#CDEBDD]";
-
-const linkClass =`rounded-sm font-semibold text-[var(--pandan)] underline-offset-4 hover:underline ${focusRing}`;
 
 export default function Home() {
   return (
@@ -76,29 +75,23 @@ export default function Home() {
           </p>
           <ul aria-label="In closed beta" className="mt-8 flex flex-wrap gap-2 sm:mt-10">
             <li>
-              <a href={CORPUS_URL} className={`${pillClass} ${focusRing}`}>
-                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
+              <a href={CORPUS_URL} className={pill}>
+                <ProductMark product="corpus" />
                 Speech corpus in closed beta
               </a>
             </li>
             <li>
-              <Link href="/blog/notebook-closed-beta" className={`${pillClass} ${focusRing}`}>
-                <span aria-hidden="true" className="h-2 w-2 rounded-full bg-[var(--pandan)]" />
+              <Link href="/blog/notebook-closed-beta" className={pill}>
+                <ProductMark product="notebook" />
                 Notebook for SLPs in closed beta
               </Link>
             </li>
           </ul>
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
-            <a
-              href={CORPUS_URL}
-              className={`flex h-14 w-full items-center justify-center rounded-2xl sm:inline-flex sm:w-auto bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] ${focusRing}`}
-            >
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+            <a href={CORPUS_URL} className={`${buttonPrimary} ${buttonBlock}`}>
               Lend your voice
             </a>
-            <a
-              href="#waitlist"
-              className={`flex h-14 w-full items-center justify-center rounded-2xl sm:inline-flex sm:w-auto px-7 text-base font-semibold text-[var(--pandan)] transition-colors hover:bg-[var(--mint)] ${focusRing}`}
-            >
+            <a href="#waitlist" className={`${buttonSecondary} ${buttonBlock}`}>
               Join the waitlist
             </a>
           </div>
@@ -122,15 +115,20 @@ export default function Home() {
       {/* What we're building */}
       <section id="building" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">What we release</h2>
-        <div className="mt-8 grid gap-8 sm:mt-12 sm:gap-12 md:grid-cols-3 md:gap-10">
+        <div className="mt-8 grid gap-4 sm:mt-12 md:grid-cols-3 md:gap-6">
           {BUILDING.map((b) => (
-            <div key={b.title}>
+            <div key={b.title} className={`${card} flex flex-col bg-white ring-1 ring-inset ring-[var(--tinta)]/[0.08]`}>
               <h3 className="text-xl font-semibold">{b.title}</h3>
               <p className="mt-3 max-w-[32ch] leading-relaxed text-[var(--abo)]">{b.body}</p>
-              {b.link && (
-                <a href={b.link.href} className={`mt-4 inline-block ${linkClass}`}>
-                  {b.link.label} <span aria-hidden="true">→</span>
-                </a>
+              {b.product && b.link && (
+                <div className="mt-auto pt-8">
+                  <div className="border-t border-[var(--tinta)]/[0.08] pt-6">
+                    <ProductLockup product={b.product} size="sm" />
+                    <a href={b.link.href} className={`mt-4 inline-block ${textLink}`}>
+                      {b.link.label} <span aria-hidden="true">→</span>
+                    </a>
+                  </div>
+                </div>
               )}
             </div>
           ))}
@@ -151,13 +149,19 @@ export default function Home() {
                 className="border-l-2 pb-8 pl-5 last:pb-0 md:border-l-0 md:border-t-2 md:pb-0 md:pl-0 md:pt-6"
                 style={{ borderColor: now || done ? "var(--pandan)" : "rgba(19,38,31,0.1)" }}
               >
-                <p className={`text-sm font-medium ${now ? "text-[var(--pandan)]" : "text-[var(--abo)]"}`}>
+                <p
+                  className={
+                    now
+                      ? "inline-flex rounded-full bg-[var(--mint)] px-2.5 py-0.5 text-sm font-semibold text-[var(--pandan)]"
+                      : "text-sm font-medium text-[var(--abo)] md:py-0.5"
+                  }
+                >
                   {now ? "Now" : done ? "Done" : `Step ${i + 1}`}
                 </p>
                 <h3 className="mt-1 text-lg font-semibold md:mt-2">{s.title}</h3>
                 <p className="mt-1 leading-relaxed text-[var(--abo)] md:mt-2">{s.body}</p>
                 {s.href && (
-                  <a href={s.href} className={`mt-3 inline-block ${linkClass}`}>
+                  <a href={s.href} className={`mt-3 inline-block ${textLink}`}>
                     Start recording <span aria-hidden="true">→</span>
                   </a>
                 )}
@@ -168,13 +172,14 @@ export default function Home() {
       </section>
 
       {/* Waitlist */}
-      <section id="waitlist" className="scroll-mt-18 bg-[var(--mint)] sm:scroll-mt-6">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:gap-14 sm:px-10 sm:py-28 lg:grid-cols-2 lg:gap-20 lg:py-36">
+      <section id="waitlist" className="scroll-mt-18 bg-[var(--pandan)] text-[var(--gatas)] sm:scroll-mt-6">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:gap-14 sm:px-10 sm:py-28 lg:grid-cols-2 lg:gap-20 lg:py-32">
           <div>
-            <h2 className="max-w-[14ch] text-[clamp(2.25rem,10vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
+            <LogoMark size={48} variant="reversed" />
+            <h2 className="mt-8 max-w-[14ch] text-[clamp(2.25rem,10vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
               Help build it from day zero.
             </h2>
-            <p className="mt-5 max-w-[38ch] text-lg leading-relaxed text-[var(--tinta)]/70 sm:mt-6">
+            <p className="mt-6 max-w-[38ch] text-lg leading-relaxed text-[var(--mint)]">
               <Brand /> is independent and run by one developer, in public. Join to follow
               along or to help.
             </p>

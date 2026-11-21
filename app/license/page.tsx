@@ -65,8 +65,8 @@ export default function LicensePage() {
       </p>
 
       {/* The one idea worth seeing at a glance: the license changes with time */}
-      <ol aria-label="How the license changes over time" className="mt-14 grid gap-3 rounded-[28px] bg-[var(--mint)] p-3 md:grid-cols-2">
-        <li className="rounded-[20px] bg-white p-7 sm:p-9">
+      <ol aria-label="How the license changes over time" className="mt-14 grid gap-3 rounded-3xl bg-[var(--mint)] p-3 md:grid-cols-2">
+        <li className="rounded-2xl bg-white p-6 sm:p-8">
           <p className="text-sm font-medium text-[var(--abo)]">When a version is published</p>
           <p className="mt-2 text-[2rem] font-semibold leading-tight tracking-[-0.02em]">FSL 1.1</p>
           <p className="mt-3 max-w-[38ch] leading-relaxed text-[var(--abo)]">
@@ -74,7 +74,7 @@ export default function LicensePage() {
             with it.
           </p>
         </li>
-        <li className="rounded-[20px] bg-[var(--pandan)] p-7 text-white sm:p-9">
+        <li className="rounded-2xl bg-[var(--pandan)] p-6 text-white sm:p-8">
           <p className="text-sm font-medium text-white/75">Two years later</p>
           <p className="mt-2 text-[2rem] font-semibold leading-tight tracking-[-0.02em]">Apache 2.0</p>
           <p className="mt-3 max-w-[38ch] leading-relaxed text-white/85">

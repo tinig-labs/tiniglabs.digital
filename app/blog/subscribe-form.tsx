@@ -88,7 +88,7 @@ export function SubscribeForm() {
           aria-describedby={error ? `${emailId}-err` : undefined}
           disabled={submitting}
           className={[
-            "h-14 w-full min-w-0 rounded-2xl sm:flex-1 border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
+            "h-14 w-full min-w-0 rounded-full sm:flex-1 border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
             "focus:border-[var(--pandan)] focus:outline-none focus:ring-4 focus:ring-[var(--pandan)]/15 disabled:opacity-60",
             error ? "border-[#B4234A]" : "border-[var(--tinta)]/10",
           ].join(" ")}
@@ -96,7 +96,7 @@ export function SubscribeForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="h-14 shrink-0 rounded-2xl bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70"
+          className="h-14 shrink-0 rounded-full bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-[background-color,transform] duration-150 hover:bg-[#185A42] active:translate-y-px focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--pandan)] disabled:cursor-wait disabled:bg-[var(--pandan)]/70"
         >
           {submitting ? "Subscribing…" : "Subscribe"}
         </button>

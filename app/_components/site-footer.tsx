@@ -9,6 +9,7 @@ const FOOTER_LINKS = [
   { label: "Speech corpus", href: CORPUS_URL },
   { label: "Notebook", href: NOTEBOOK_URL },
   { label: "GitHub", href: "https://github.com/tinig-labs" },
+  { label: "Brand", href: "/brand" },
   { label: "License", href: "/license" },
   { label: "Terms of Service", href: "/terms" },
   { label: "Privacy Policy", href: "/privacy" },
@@ -16,7 +17,7 @@ const FOOTER_LINKS = [
 
 export function SiteFooter() {
   return (
-    <footer className="mx-auto w-full max-w-6xl px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-14 sm:px-10 sm:pb-12 sm:pt-16">
+    <footer className="mx-auto w-full max-w-6xl px-5 pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-16 sm:px-10 sm:pb-12">
       <div className="flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
         <Link href="/" aria-label="tinig labs home" className={`self-start rounded-sm ${focusRing}`}>
           <Wordmark size="sm" />

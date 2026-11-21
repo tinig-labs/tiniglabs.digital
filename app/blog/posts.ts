@@ -1,6 +1,7 @@
 // Every published post, newest first. The blog index and the sitemap read this list.
 // Each post with its own opengraph-image.tsx needs a Content-Type route in public/staticwebapp.config.json.
-export type Post = { slug: string; title: string; date: string; summary: string };
+// `product` names the tinig labs product a post is about, so the post shows that product's mark.
+export type Post = { slug: string; title: string; date: string; summary: string; product?: "notebook" | "corpus" };
 
 export const POSTS: Post[] = [
   {
@@ -8,12 +9,14 @@ export const POSTS: Post[] = [
     title: "The notebook for SLPs is open in closed beta",
     date: "2026-11-20",
     summary: "A recording notebook for speech-language pathologists: record, transcribe and track patient speech, encrypted on every device.",
+    product: "notebook",
   },
   {
     slug: "speech-corpus-closed-beta",
     title: "The speech corpus is open in closed beta",
     date: "2026-11-17",
     summary: "An open Tagalog speech corpus is now taking recordings from a small group of invited speakers and specialists.",
+    product: "corpus",
   },
 ];
 

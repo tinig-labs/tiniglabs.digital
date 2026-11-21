@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { Brand, focusRing } from "../../_components/brand";
+import { Brand, ProductLockup, focusRing } from "../../_components/brand";
+import { buttonBlock, buttonPrimary } from "../../_components/ui";
 import { CORPUS_URL, NOTEBOOK_URL, ORGANIZATION, SITE_URL, jsonLd, pageMetadata } from "../../_components/site";
 import { formatDate, getPost } from "../posts";
 import { SubscribeForm } from "../subscribe-form";
@@ -161,11 +162,11 @@ export default function NotebookBetaPost() {
           model to work for clinicians today.
         </P>
 
-        <div className="mt-12">
-          <a
-            href={REQUEST_URL}
-            className={`flex h-14 w-full items-center justify-center rounded-2xl bg-[var(--pandan)] px-7 text-base font-semibold text-white transition-colors hover:bg-[#185A42] sm:inline-flex sm:w-auto ${focusRing}`}
-          >
+        <div className="mt-12 flex flex-col gap-6 rounded-3xl bg-[var(--mint)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+          <a href={NOTEBOOK_URL} className={`self-start rounded-sm sm:self-center ${focusRing}`}>
+            <ProductLockup product="notebook" />
+          </a>
+          <a href={REQUEST_URL} className={`${buttonPrimary} ${buttonBlock}`}>
             Request access
           </a>
         </div>
