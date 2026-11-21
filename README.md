@@ -2,7 +2,7 @@
   <a href="https://tiniglabs.digital">
     <picture>
       <source media="(prefers-color-scheme: dark)" srcset="public/banner-dark.svg">
-      <img alt="tinig labs" src="public/banner.svg" width="520">
+      <img alt="tinig labs" src="public/banner.svg" width="300">
     </picture>
   </a>
 </h1>

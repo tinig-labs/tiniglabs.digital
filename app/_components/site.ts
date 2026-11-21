@@ -67,7 +67,7 @@ export const ORGANIZATION = {
   "@id": `${SITE_URL}/#organization`,
   name: SITE_NAME,
   url: `${SITE_URL}/`,
-  logo: `${SITE_URL}/logo.svg`,
+  logo: `${SITE_URL}/brand/tinig-labs-app-icon-512.png`,
   description: "An independent lab releasing open models, datasets, and tools for Filipino speech.",
   sameAs: [CORPUS_URL, NOTEBOOK_URL, GITHUB_URL],
 } as const;
