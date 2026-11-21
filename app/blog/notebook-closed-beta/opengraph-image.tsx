@@ -11,5 +11,5 @@ export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default function Image() {
-  return ogImage({ eyebrow: "talâ, the tinig labs blog", title: post.title, footer: formatDate(post.date) });
+  return ogImage({ eyebrow: "talâ, the tinig labs blog", title: post.title, footer: formatDate(post.date), product: "notebook" });
 }

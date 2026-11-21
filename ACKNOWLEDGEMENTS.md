@@ -22,7 +22,7 @@ Each package's full license is in its folder under `node_modules` (or `api/node_
 - [Figtree](https://github.com/erikdkennedy/figtree) by Erik Kennedy, under the SIL Open Font License 1.1. Used for all text.
 - [Montserrat](https://github.com/JulietaUla/Montserrat) by Julieta Ulanovsky and contributors, under the SIL Open Font License 1.1. Used for the tinig labs name.
 
-Both are served from this site through `next/font`, not loaded from Google.
+Both are served from this site through `next/font`, not loaded from Google. The Open Graph images use WOFF copies of the same fonts (from [Fontsource](https://fontsource.org)) in `app/_components/og-fonts/`, with their licenses beside them.
 
 ## License
 
