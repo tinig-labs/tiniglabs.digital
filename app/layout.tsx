@@ -56,7 +56,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(SITE_JSON_LD)} />
         <SiteHeader />
         {children}
-        <SiteFooter />
+        <SiteFooter
+          current="lab"
+          links={[
+            { label: "Blog", href: "/blog" },
+            { label: "License", href: "/license" },
+          ]}
+        />
       </body>
     </html>
   );
