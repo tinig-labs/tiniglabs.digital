@@ -57,10 +57,13 @@ app/
   page.tsx               Home page, with the Said/Meant demo and the waitlist form
   blog/                  talâ, the blog, its subscribe form, and posts.ts (the list of posts)
   blog/<slug>/           One folder per post; add the post to posts.ts too
+  brand/                 The brand guide (the web version of BRAND.md)
   license/ terms/ privacy/   Legal pages; /license renders LICENSE.md at build time
   waitlist/unsubscribe/  Leave the waitlist (from the link in waitlist emails)
   blog/unsubscribe/      Unsubscribe from talâ (from the link in blog emails)
-  _components/           Header, footer, brand wordmark, legal page shell, signup client
+  _components/           Header, footer, marks and lockups (brand.tsx, marks.ts), shared styles (ui.ts),
+                         Open Graph card (og.tsx, og-fonts/), legal page shell, signup client
+  favicon.ico icon.svg apple-icon.png   The tinig labs app icon
   robots.ts sitemap.ts not-found.tsx
 api/                     Azure Functions app, deployed as the Static Web App's API
   src/functions/signup.ts    POST /api/waitlist and POST /api/subscribe
@@ -74,14 +77,17 @@ api/                     Azure Functions app, deployed as the Static Web App's A
   src/rate-limit.ts          Per-IP attempt limit
 public/
   staticwebapp.config.json   Security headers, 404 page, caching, API runtime
-  logo.svg banner.svg banner-dark.svg
+  brand/                     Every logo and app icon file, plus a ZIP of them all (see BRAND.md)
+  logo.svg banner.svg banner-dark.svg   Echo t mark (for older links) and the README banners
 swa-cli.config.json      Local Static Web Apps CLI setup used by npm run dev:swa
 ```
 
 ## Design conventions
 
-- Colors are CSS variables in `app/globals.css`: `--gatas` (background), `--tinta` (ink), `--abo` (secondary text), `--pandan` (actions), `--mint` (surfaces). Use them instead of new hex values.
+- Colors are CSS variables in `app/globals.css`: `--gatas` (background), `--tinta` (ink), `--abo` (secondary text), `--pandan` (actions), `--mint` (surfaces), `--dahon` (accent on pandan only, never text on gatas). Use them instead of new hex values.
 - Body text is Figtree. The name "tinig labs" is always lowercase and always set in Montserrat through the `Brand` component in `app/_components/brand.tsx`.
+- Logos follow [BRAND.md](BRAND.md). Use `Wordmark`, `ProductLockup`, `Mark` and `ProductMark` from `app/_components/brand.tsx`; they load the files in `public/brand/`, so never redraw or recolour a mark. Use the reversed version on pandan or tinta.
+- Buttons, pills, cards and links share the classes in `app/_components/ui.ts`: pill-shaped buttons, radius-lg (`rounded-3xl`) cards, spacing on the 4/8/12/16/24/32 scale.
 - Copy is short and in sentence case. Buttons say what happens ("Join the waitlist"), and errors say how to fix the problem.
 - Every interactive element needs a visible keyboard focus state, and animation must respect `prefers-reduced-motion`.
 
