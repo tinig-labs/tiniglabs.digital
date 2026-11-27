@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { type Product, ProductLockup, ProductMark, focusRing } from "../_components/brand";
-import { buttonBlock, buttonPrimary, frame } from "../_components/ui";
+import { buttonBlock, buttonPrimary } from "../_components/ui";
 import { type Post, formatDate } from "./posts";
 import { PostToc } from "./post-toc";
 import { SubscribeForm } from "./subscribe-form";
+
+/** A post's outer frame: fills the screen up to 128rem, with wider gutters on large screens */
+const frame = "mx-auto w-full max-w-[128rem] px-5 sm:px-10 lg:px-16 2xl:px-24";
 
 export type PostSection = { id: string; title: string; body: ReactNode };
 
@@ -113,13 +116,13 @@ export function PostShell({
                 </a>
               </div>
               <div className="mt-16 border-t border-[var(--tinta)]/10 pt-10 xl:mt-10 xl:pt-8">
-                <SubscribeForm />
+                <SubscribeForm fit />
               </div>
             </div>
           </aside>
         ) : (
           <div className="mt-16 max-w-[44rem] border-t border-[var(--tinta)]/10 pt-10 lg:col-start-2 lg:row-start-3">
-            <SubscribeForm />
+            <SubscribeForm fit />
           </div>
         )}
       </div>

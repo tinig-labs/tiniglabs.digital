@@ -10,7 +10,8 @@ type Status = "idle" | "submitting" | "success" | "error";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
-export function SubscribeForm() {
+/** `fit`: lay out by the form's own width, not the screen's, so it also fits a narrow side column */
+export function SubscribeForm({ fit = false }: { fit?: boolean } = {}) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState("");
@@ -67,12 +68,12 @@ export function SubscribeForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="@container relative">
+    <form onSubmit={onSubmit} noValidate className={fit ? "@container relative" : "relative"}>
       <HoneypotField />
       <label htmlFor={emailId} className="block text-sm font-medium text-[var(--abo)]">
         Get new posts by email
       </label>
-      <div className="mt-2 flex flex-col gap-3 @sm:flex-row">
+      <div className={`mt-2 flex flex-col gap-3 ${fit ? "@sm:flex-row" : "sm:flex-row"}`}>
         <input
           id={emailId}
           type="email"
@@ -88,7 +89,7 @@ export function SubscribeForm() {
           aria-describedby={error ? `${emailId}-err` : undefined}
           disabled={submitting}
           className={[
-            "h-14 w-full min-w-0 rounded-full @sm:flex-1 border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
+            `h-14 w-full min-w-0 rounded-full ${fit ? "@sm:flex-1" : "sm:flex-1"} border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60`,
             "focus:border-[var(--pandan)] focus:outline-none focus:ring-4 focus:ring-[var(--pandan)]/15 disabled:opacity-60",
             error ? "border-[#B4234A]" : "border-[var(--tinta)]/10",
           ].join(" ")}

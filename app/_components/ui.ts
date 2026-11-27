@@ -32,8 +32,5 @@ export const textLink = `rounded-sm font-semibold text-[var(--pandan)] underline
 /** Inline link inside running text */
 export const proseLink = `rounded-sm font-medium text-[var(--pandan)] underline underline-offset-4 hover:text-[#185A42] ${focusRing}`;
 
-/** The site's outer frame: fills the screen up to 128rem, with wider gutters on large screens */
-export const frame = "mx-auto w-full max-w-[128rem] px-5 sm:px-10 lg:px-16 2xl:px-24";
-
 /** Short label above a section heading */
 export const eyebrow = "text-sm font-semibold text-[var(--pandan)]";

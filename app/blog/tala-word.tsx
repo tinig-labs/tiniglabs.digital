@@ -99,14 +99,13 @@ export function TalaWord() {
   const reading = READINGS.find((r) => r.id === id)!;
 
   return (
-    <div className="xl:grid xl:grid-cols-[auto_minmax(0,1fr)] xl:items-end xl:gap-x-20">
-      <h1 className="text-[clamp(7.5rem,26vw,16rem)] font-semibold leading-[0.82] tracking-[-0.055em] xl:text-[clamp(16rem,19vw,18rem)]">
+    <div>
+      <h1 className="text-[clamp(7.5rem,26vw,16rem)] font-semibold leading-[0.82] tracking-[-0.055em]">
         tala
         <span className="sr-only">, the tinig labs blog</span>
       </h1>
 
-      <div className="xl:pb-3">
-      <div className="mt-10 max-w-[38rem] sm:mt-14 lg:max-w-[46rem] xl:mt-0 xl:max-w-none">
+      <div className="mt-10 max-w-[38rem] sm:mt-14">
         <Waveform reading={reading} />
       </div>
 
@@ -143,7 +142,6 @@ export function TalaWord() {
           <p className="text-xl font-semibold">{reading.meaning}</p>
           <p className="mt-1 max-w-[36ch] leading-relaxed text-[var(--abo)]">{reading.ending}</p>
         </div>
-      </div>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export function LegalPage({
   children: ReactNode;
 }) {
   return (
-    <main className="mx-auto w-full max-w-[128rem] flex-1 px-5 pb-20 pt-8 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
+    <main className="mx-auto w-full max-w-6xl flex-1 px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
       <h1 className="text-[clamp(2.25rem,10vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">{title}</h1>
       <p className="mt-4 text-sm text-[var(--abo)]">Last updated {updated}</p>
       <p className="mt-6 max-w-[52ch] text-lg leading-relaxed text-[var(--abo)]">{lede}</p>
