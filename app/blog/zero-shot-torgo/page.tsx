@@ -61,8 +61,8 @@ const SCORECARD: ScoreRow[] = [
   {
     trait: "Sounds like the same person",
     detail: "Voice-match score against the speaker's real recordings",
-    F03: { verdict: "kept", note: "0.31 against F03, against 0.05 for the control and 0.22 for F01." },
-    F01: { verdict: "unclear", note: "0.40 against F01 but 0.38 against F03, from only 2 test clips. Clearly not the control (0.03)." },
+    F03: { verdict: "kept", note: "0.31 against F03, against 0.05 for the control and 0.22 for F01. Our native listener disagreed: it didn't sound like F03 to them." },
+    F01: { verdict: "unclear", note: "0.40 against F01 but 0.38 against F03, from only 2 test clips. Clearly not the control (0.03). Our native listener did hear it as F01." },
   },
   {
     trait: "Voice quality",
@@ -104,7 +104,7 @@ const CHANGES: Change[] = [
   {
     tried: "Salient reference",
     what: "Cloning from each speaker's most impaired sentences",
-    result: "Helped in English. F03's intelligibility ratio rose from 0.11 to 0.26–0.30, and the clone matched F03 better (0.33 to 0.42). In Tagalog it was mixed: the best pitch result (0.60), but the control's clone also got harder to understand.",
+    result: "Helped in English. F03's intelligibility ratio rose from 0.11 to 0.26–0.30, and the clone matched F03 better (0.33 to 0.42). In Tagalog it was mixed: the best pitch result (0.60), but the control's clone also got harder to understand. To our listener, F03's salient clone didn't sound more impaired; it mainly said kayumanggi differently.",
   },
   {
     tried: "Stability 0",
@@ -153,7 +153,7 @@ export default function ZeroShotTorgoPost() {
         <section aria-labelledby="in-short" className="mt-10 rounded-3xl bg-[var(--mint)] p-6 sm:p-8">
           <h2 id="in-short" className="text-sm font-semibold text-[var(--pandan)]">In short</h2>
           <ul className="mt-4 space-y-3 leading-relaxed">
-            <li><b>The clones sound like the person,</b> in English and in Tagalog.</li>
+            <li><b>The clones mostly sound like the person,</b> in English and in Tagalog, though our native listener didn&apos;t recognise every one.</li>
             <li><b>Voice quality carries over into Tagalog,</b> the roughness and breathiness of a dysarthric voice. The more severe the dysarthria, the more comes through.</li>
             <li><b>Being hard to understand carries over only partly,</b> and only in Tagalog. In English the clones speak far more clearly than the real person.</li>
             <li><b>Slow, pausing speech mostly doesn&apos;t carry over.</b> The clones speak faster and pause less than any real speaker.</li>
@@ -231,7 +231,7 @@ export default function ZeroShotTorgoPost() {
             <Scorecard rows={SCORECARD} />
             <RatioExplainer />
 
-            <H3>1. The clones sound like the person, even in Tagalog</H3>
+            <H3>1. The clones mostly sound like the person, even in Tagalog</H3>
             <P>
               F03&apos;s Tagalog clone scores 0.31 on the voice-match model against F03, but only 0.05
               against the control. A stock Tagalog voice scores 0.07 or less against any of the
@@ -278,6 +278,38 @@ export default function ZeroShotTorgoPost() {
             </P>
             <KwfPilotTable pilot={RESULTS.kwfPilot} />
 
+            <H2>What a native listener heard</H2>
+            <P>
+              One of us, a native Tagalog speaker, listened to the clips. They aren&apos;t a
+              clinician, so this says nothing about how severe the dysarthria is, only how the clips
+              sound to a native ear. It&apos;s one listener, informal and not blinded.
+            </P>
+            <List>
+              <li>
+                <b>Same person:</b> F01&apos;s and FC03&apos;s Tagalog clones sounded like their real
+                recordings. F03&apos;s didn&apos;t, even though the voice-match model rated it the
+                clearest match. The model and the ear don&apos;t always agree.
+              </li>
+              <li>
+                <b>Tagalog:</b> mostly correct, but some words were still stressed or pronounced
+                wrong, even with KWF spelling.
+              </li>
+              <li>
+                <b>Dysarthria:</b> in the standard setup, both F01&apos;s and F03&apos;s Tagalog clones
+                sounded different from the control&apos;s, beyond being a different voice. That
+                agrees with the measurements.
+              </li>
+              <li>
+                <b>Salient reference:</b> F03&apos;s salient clone didn&apos;t sound more impaired than
+                its standard clone. The main audible difference was how it pronounced{" "}
+                <i>kayumanggi</i>.
+              </li>
+              <li>
+                <b>What the clones lose:</b> the real dysarthric speakers&apos; words were harder to
+                make out than their clones&apos;. Speech recognition found the same thing.
+              </li>
+            </List>
+
             <H2>Did the changes help?</H2>
             <P>
               Besides the standard setup, we tried four changes meant to carry more of the
@@ -290,7 +322,7 @@ export default function ZeroShotTorgoPost() {
         <H2>Limitations</H2>
         <List>
           <li>Three speakers is a small study. With 6 to 12 clips per speaker and setting, the margins are wide, and small differences can be noise.</li>
-          <li>No one listened. These are automatic measurements only; we didn&apos;t run a listening test with clinicians or native speakers.</li>
+          <li>No clinician listened. Apart from one native speaker&apos;s informal impressions, the results are automatic measurements, not a listening test.</li>
           <li>F01 recorded only 12 usable sentences, so its voice-match scores rest on 2 test clips and aren&apos;t reliable.</li>
           <li>F01&apos;s recordings are much cleaner than the control&apos;s, at 24 against 12 dB harmonics-to-noise. Some of its voice-quality gap is probably the recording, not the voice.</li>
           <li>TORGO&apos;s speakers recorded English. Every Tagalog clone carries an English accent; the control speaker lets us separate that from dysarthria.</li>
