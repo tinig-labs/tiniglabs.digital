@@ -55,12 +55,9 @@ function fmt(v: number | null, digits = 2, pct = false) {
 /** Every averaged measurement, one row per speaker and condition */
 export function ResultsTable({ rows }: { rows: Row[] }) {
   return (
-    <div className="mt-8 overflow-x-auto rounded-2xl border border-[var(--tinta)]/10 sm:-mx-6 lg:-mx-16">
-      <table className="w-full min-w-[40rem] text-left text-sm tabular-nums">
-        <caption className="px-4 pt-4 text-left text-sm text-[var(--abo)]">
-          Averages per speaker and condition. Similarity is cosine similarity to the speaker&apos;s
-          held-back real recordings (higher is closer). WER and CER from Whisper large-v3.
-        </caption>
+    <figure className="mt-8 sm:-mx-6 lg:-mx-16">
+    <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
+      <table className="w-full min-w-[46rem] text-left text-sm tabular-nums" aria-describedby="results-caption">
         <thead>
           <tr className="border-b border-[var(--tinta)]/10 text-[var(--abo)]">
             <th scope="col" className="px-4 py-3 font-semibold">Speaker</th>
@@ -73,6 +70,7 @@ export function ResultsTable({ rows }: { rows: Row[] }) {
             <th scope="col" className="px-4 py-3 text-right font-semibold">Pauses</th>
             <th scope="col" className="px-4 py-3 text-right font-semibold">F0 SD (st)</th>
             <th scope="col" className="px-4 py-3 text-right font-semibold">HNR (dB)</th>
+            <th scope="col" className="px-4 py-3 text-right font-semibold">Shimmer</th>
           </tr>
         </thead>
         <tbody>
@@ -88,11 +86,18 @@ export function ResultsTable({ rows }: { rows: Row[] }) {
               <td className="px-4 py-2.5 text-right">{fmt(r.pauseRatio, 0, true)}</td>
               <td className="px-4 py-2.5 text-right">{fmt(r.f0sd, 1)}</td>
               <td className="px-4 py-2.5 text-right">{fmt(r.hnr, 1)}</td>
+              <td className="px-4 py-2.5 text-right">{fmt(r.shimmer ?? null, 1, true)}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
+    <figcaption id="results-caption" className="mt-3 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
+      Averages per speaker and condition. Similarity is cosine similarity to the speaker&apos;s
+      held-back real recordings (higher is closer). WER and CER are from Whisper large-v3. Real
+      recordings are measured but not published here.
+    </figcaption>
+    </figure>
   );
 }
 
@@ -103,10 +108,12 @@ const RATIO_FILL: Record<(typeof RATIO_CONDITIONS)[number], string> = {
   "clone-tl-v2": "#13261F",
 };
 
-/** Transfer ratio per marker: 0 = trait gone, 1 = trait kept */
-export function TransferChart({ transfer }: { transfer: Transfer[] }) {
-  const min = -0.5;
-  const max = 1.5;
+/** Transfer ratio per marker: 0 = trait gone, 1 = trait kept. Whiskers are 90% bootstrap intervals. */
+export function TransferChart({ transfer: all }: { transfer: Transfer[] }) {
+  const transfer = all.filter((m) => m.reported);
+  const skipped = all.filter((m) => !m.reported);
+  const min = -1;
+  const max = 2;
   const rowH = 22;
   const groupGap = 18;
   const labelW = 150;
@@ -139,14 +146,24 @@ export function TransferChart({ transfer }: { transfer: Transfer[] }) {
               </text>
               {RATIO_CONDITIONS.map((c, j) => {
                 const v = m.ratios[c];
+                const ci = m.ci90[c];
                 const y = y0 + j * rowH + 3;
                 if (v === null || v === undefined) return null;
                 const x0 = x(0);
                 const x1 = x(v);
+                const mid = y + (rowH - 6) / 2;
+                const labelX = Math.max(x0, x1, ci ? x(ci[1]) : 0) + 6;
                 return (
                   <g key={c}>
-                    <rect x={Math.min(x0, x1)} y={y} width={Math.max(2, Math.abs(x1 - x0))} height={rowH - 6} rx={3} fill={RATIO_FILL[c]} />
-                    <text x={Math.max(x0, x1) + 6} y={y + rowH - 10} fontSize="11" fill="var(--abo)">
+                    <rect x={Math.min(x0, x1)} y={y + 3} width={Math.max(2, Math.abs(x1 - x0))} height={rowH - 12} rx={2} fill={RATIO_FILL[c]} />
+                    {ci && (
+                      <g stroke="var(--tinta)" strokeOpacity={0.55} strokeWidth={1.25}>
+                        <line x1={x(ci[0])} x2={x(ci[1])} y1={mid} y2={mid} />
+                        <line x1={x(ci[0])} x2={x(ci[0])} y1={mid - 4} y2={mid + 4} />
+                        <line x1={x(ci[1])} x2={x(ci[1])} y1={mid - 4} y2={mid + 4} />
+                      </g>
+                    )}
+                    <text x={Math.min(labelX, labelW + plotW + 8)} y={mid + 4} fontSize="11" fill="var(--abo)">
                       {v.toFixed(2)}
                     </text>
                   </g>
@@ -163,6 +180,16 @@ export function TransferChart({ transfer }: { transfer: Transfer[] }) {
             {CONDITION_LABEL[c]}
           </span>
         ))}
+        <span className="basis-full">
+          Bars are the ratio, and whiskers are 90% bootstrap intervals. Values outside −1 to 2 are
+          drawn at the edge.
+          {skipped.length > 0 && (
+            <>
+              {" "}Not shown: {skipped.map((m) => m.label.toLowerCase()).join(", ")}. The two real
+              speakers barely differ on these (|d| &lt; 0.5), so a ratio would mean nothing.
+            </>
+          )}
+        </span>
       </figcaption>
     </figure>
   );

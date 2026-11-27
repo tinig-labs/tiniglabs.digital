@@ -179,7 +179,12 @@ export default function ZeroShotTorgoPost() {
         <P>
           We create an instant voice clone in ElevenLabs from each reference. The clones are
           private to our account, used for research only, and will be deleted once we&apos;re done.
-          Every clone uses the same settings, logged with the results.
+        </P>
+        <P>
+          We turn ElevenLabs&apos; background-noise removal off. Breathiness and roughness are
+          part of what dysarthria sounds like, and a denoiser could strip them out before the clone
+          ever hears them. Every request uses the same voice settings: stability 0.5, similarity
+          0.9, style 0, speaker boost on. These are logged with each clip.
         </P>
 
         <H3>4. Tagalog prompts</H3>
@@ -234,8 +239,65 @@ export default function ZeroShotTorgoPost() {
         <H2>Results</H2>
         {RESULTS ? (
           <>
+            <P>
+              We generated 134 clips and measured them alongside the 24 real held-back recordings.
+              In short, the clones carry the <i>voice</i> into Tagalog but not the <i>speech</i>:
+              voice quality survives, while articulation and timing get smoothed out.
+            </P>
+
+            <H3>The clones sound like their speaker, in both languages</H3>
+            <P>
+              Every clone is much closer to its own speaker than to the other one. F03&apos;s
+              clones score 0.33 to 0.50 against F03, but only 0.07 to 0.25 against FC03. The stock
+              Tagalog voice scores 0.07 to 0.11 against either speaker. Clones still fall short of
+              a speaker&apos;s other real recordings, which score 0.65 for F03 and 0.80 for FC03:
+              recognisably them, but not quite.
+            </P>
+            <P>
+              The older model kept identity better. In Tagalog, <code>eleven_multilingual_v2</code>{" "}
+              clones scored 0.50 for both speakers, against 0.26 to 0.33 for{" "}
+              <code>eleven_v3</code>.
+            </P>
+
+            <H3>Monotone pitch survives the switch to Tagalog</H3>
+            <P>
+              F03&apos;s pitch moves less than FC03&apos;s: a standard deviation of 3.5 semitones
+              against 5.3. Flattened pitch is a common trait of dysarthria. The clones keep most
+              of that gap, with a transfer ratio of 0.83 in English, 0.53 in Tagalog with v3 and
+              1.18 with multilingual v2. All three intervals stay above zero. Shimmer, a measure of
+              voice roughness, carries over partly (0.30 to 0.57).
+            </P>
+
+            <H3>Intelligibility and timing get smoothed away</H3>
+            <P>
+              Whisper misheard 15% of F03&apos;s real words, against 3% for FC03. F03&apos;s English
+              clone dropped to 2%, close to the control. The transfer ratio is 0.19, so most of the
+              articulation difference is gone. In Tagalog the comparison is inconclusive. Whisper
+              makes 7% to 14% errors on every synthetic Tagalog voice, the stock one included, and
+              that noise swamps a gap this small.
+            </P>
+            <P>
+              Timing goes too, for both speakers. Real speech ran at 2.5 to 2.8 syllables per
+              second with about 15% of each clip in pauses. Every clone speaks at 3.6 to 5.2
+              syllables per second with almost no pauses. Slow, effortful rate is a hallmark of
+              many dysarthrias, and these clones don&apos;t reproduce it.
+            </P>
+
             <TransferChart transfer={RESULTS.transfer} />
             <ResultsTable rows={RESULTS.rows} />
+
+            <H3>What it means</H3>
+            <P>
+              Zero-shot cloning into Tagalog works for <i>who</i> is speaking and for some of{" "}
+              <i>how their voice sounds</i>. It doesn&apos;t yet work for how they articulate or
+              pace their speech, and those are the traits a dysarthric speech model most needs to
+              learn. As a source of synthetic Tagalog dysarthric speech, plain text-to-speech
+              cloning isn&apos;t enough on its own.
+            </P>
+            <P>
+              F03 also has mild dysarthria. A more severely affected speaker might carry more
+              through, or might break the clone entirely. That is the next speaker to try.
+            </P>
           </>
         ) : (
           <Pending>Results appear here once evaluation has run.</Pending>
