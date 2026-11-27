@@ -1,17 +1,5 @@
-// Everything on the post that changes as the experiment runs.
+// Clips and results shown on the post.
 // The experiment repo (zero-shot-torgo/scripts/export_blog.py) rewrites CLIPS and RESULTS.
-
-export type Phase = { label: string; done: boolean };
-
-export const PHASES: Phase[] = [
-  { label: "Read the study and plan the replication", done: true },
-  { label: "Download TORGO and pick speakers", done: true },
-  { label: "Build reference and held-out sets", done: true },
-  { label: "Write Tagalog prompts and check them against KWF Diksiyonaryo", done: true },
-  { label: "Round 1: clone two voices and measure what carries over", done: true },
-  { label: "Round 2: add a severe speaker, salient references and a stability sweep", done: true },
-  { label: "Listening test with SLPs and native Tagalog listeners", done: false },
-];
 
 export type Speaker = "F01" | "F03" | "FC03" | "stock";
 export type Variant = "real" | "std-s05" | "std-s00" | "sal-s05" | "sal-s00" | "stock";

@@ -261,3 +261,133 @@ export function KwfPilotTable({ pilot }: { pilot: KwfPilot[] }) {
     </figure>
   );
 }
+
+export type Verdict = "kept" | "partly" | "lost" | "unclear";
+
+const VERDICT: Record<Verdict, { label: string; className: string }> = {
+  kept: { label: "Kept", className: "bg-[var(--pandan)] text-white" },
+  partly: { label: "Partly", className: "bg-[var(--mint)] text-[var(--pandan)] ring-1 ring-inset ring-[var(--pandan)]/30" },
+  lost: { label: "Lost", className: "bg-[var(--tinta)]/8 text-[var(--tinta)]" },
+  unclear: { label: "Can't tell", className: "border border-dashed border-[var(--abo)]/60 text-[var(--abo)]" },
+};
+
+export function VerdictChip({ verdict }: { verdict: Verdict }) {
+  const v = VERDICT[verdict];
+  return (
+    <span className={`inline-flex shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-sm font-semibold ${v.className}`}>
+      {v.label}
+    </span>
+  );
+}
+
+export type ScoreCell = { verdict: Verdict; note: string };
+export type ScoreRow = { trait: string; detail: string; F03: ScoreCell; F01: ScoreCell };
+
+/** One row per dysarthria trait, one column per dysarthric speaker */
+export function Scorecard({ rows }: { rows: ScoreRow[] }) {
+  return (
+    <figure className="mt-6 sm:-mx-6 lg:-mx-16">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
+        <table className="w-full min-w-[36rem] text-left">
+          <thead>
+            <tr className="border-b border-[var(--tinta)]/10 text-sm text-[var(--abo)]">
+              <th scope="col" className="w-[34%] px-4 py-3 font-semibold">Trait</th>
+              <th scope="col" className="px-4 py-3 font-semibold">F03, mild dysarthria</th>
+              <th scope="col" className="px-4 py-3 font-semibold">F01, severe dysarthria</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.trait} className="border-b border-[var(--tinta)]/5 align-top last:border-0">
+                <th scope="row" className="px-4 py-3.5">
+                  <span className="block font-semibold">{r.trait}</span>
+                  <span className="mt-0.5 block text-sm font-normal text-[var(--abo)]">{r.detail}</span>
+                </th>
+                {[r.F03, r.F01].map((c, i) => (
+                  <td key={i} className="px-4 py-3.5">
+                    <VerdictChip verdict={c.verdict} />
+                    <span className="mt-1.5 block text-sm leading-snug text-[var(--tinta)]/75">{c.note}</span>
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <figcaption className="mt-3 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
+        Tagalog clones, standard setup (default reference, stability 0.5, KWF spelling). Numbers are
+        transfer ratios unless stated; see the box below for how to read them.
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Two bars that show what a transfer ratio of 0.6 means */
+export function RatioExplainer() {
+  return (
+    <aside className="mt-6 rounded-3xl bg-[var(--mint)] p-6 sm:p-8" aria-labelledby="ratio-explainer">
+      <h3 id="ratio-explainer" className="text-lg font-semibold">How to read the numbers</h3>
+      <p className="mt-3 leading-relaxed text-[var(--tinta)]/85">
+        For each trait we measure how far the dysarthric speaker is from the control speaker in real
+        recordings, then how far apart their clones are. The <b>transfer ratio</b> is the share of the
+        real difference that the clones keep.
+      </p>
+      <svg viewBox="0 0 300 72" className="mt-5 h-auto w-full max-w-[26rem]" role="img" aria-labelledby="ratio-svg-title">
+        <title id="ratio-svg-title">
+          Example: the real speakers differ by 10 units, their clones by 6, so the transfer ratio is 0.6.
+        </title>
+        <text x="0" y="21" fontSize="13" fill="var(--tinta)" fontWeight={600}>Real</text>
+        <rect x="58" y="8" width="200" height="18" rx="4" fill="var(--pandan)" />
+        <text x="266" y="21" fontSize="13" fill="var(--abo)">10</text>
+        <text x="0" y="57" fontSize="13" fill="var(--tinta)" fontWeight={600}>Clones</text>
+        <rect x="58" y="44" width="120" height="18" rx="4" fill="var(--dahon)" />
+        <rect x="178" y="44" width="80" height="18" rx="4" fill="none" stroke="var(--pandan)" strokeOpacity={0.45} strokeDasharray="4 3" />
+        <text x="266" y="57" fontSize="13" fill="var(--abo)">6</text>
+      </svg>
+      <p className="mt-2 text-sm text-[var(--tinta)]/85">
+        Example: 6 ÷ 10 = a transfer ratio of 0.6. The clones keep 60% of the real difference.
+      </p>
+      <ul className="mt-5 grid gap-2 text-sm leading-snug sm:grid-cols-2">
+        <li className="flex items-start gap-2"><VerdictChip verdict="kept" /><span>0.7 or more: the trait came through.</span></li>
+        <li className="flex items-start gap-2"><VerdictChip verdict="partly" /><span>0.3 to 0.7: some of it came through.</span></li>
+        <li className="flex items-start gap-2"><VerdictChip verdict="lost" /><span>Below 0.3: the clone smoothed it away.</span></li>
+        <li className="flex items-start gap-2"><VerdictChip verdict="unclear" /><span>Too uncertain, or the real speakers barely differ.</span></li>
+      </ul>
+      <p className="mt-4 text-sm leading-relaxed text-[var(--abo)]">
+        With only 6 to 12 clips per speaker, every number has a wide margin. We call a trait kept or
+        partly kept only when its 90% interval stays above zero.
+      </p>
+    </aside>
+  );
+}
+
+export type Change = { tried: string; what: string; result: string };
+
+/** What each change did */
+export function ChangesTable({ rows }: { rows: Change[] }) {
+  return (
+    <figure className="mt-6 sm:-mx-6 lg:-mx-16">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
+        <table className="w-full min-w-[36rem] text-left">
+          <thead>
+            <tr className="border-b border-[var(--tinta)]/10 text-sm text-[var(--abo)]">
+              <th scope="col" className="w-[30%] px-4 py-3 font-semibold">What we tried</th>
+              <th scope="col" className="px-4 py-3 font-semibold">What happened</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r) => (
+              <tr key={r.tried} className="border-b border-[var(--tinta)]/5 align-top last:border-0">
+                <th scope="row" className="px-4 py-3.5">
+                  <span className="block font-semibold">{r.tried}</span>
+                  <span className="mt-0.5 block text-sm font-normal text-[var(--abo)]">{r.what}</span>
+                </th>
+                <td className="px-4 py-3.5 leading-snug text-[var(--tinta)]/85">{r.result}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </figure>
+  );
+}
