@@ -5,6 +5,12 @@ export type Post = { slug: string; title: string; date: string; summary: string;
 
 export const POSTS: Post[] = [
   {
+    slug: "zero-shot-torgo",
+    title: "Zero-shot TORGO by tinig labs",
+    date: "2026-11-27",
+    summary: "Cloning two TORGO voices, one with dysarthria and one without, into Tagalog, and measuring what survives the change of language.",
+  },
+  {
     slug: "notebook-closed-beta",
     title: "The notebook for SLPs is open in closed beta",
     date: "2026-11-20",
