@@ -6,8 +6,8 @@ import { type Post, formatDate } from "./posts";
 import { PostToc } from "./post-toc";
 import { SubscribeForm } from "./subscribe-form";
 
-/** A post's outer frame: fills the screen up to 128rem, with wider gutters on large screens */
-const frame = "mx-auto w-full max-w-[128rem] px-5 sm:px-10 lg:px-16 2xl:px-24";
+/** Same width and gutters as the site header, so a post's edges line up with the logo and nav */
+const frame = "mx-auto w-full max-w-6xl px-5 sm:px-10";
 
 export type PostSection = { id: string; title: string; body: ReactNode };
 
@@ -25,8 +25,7 @@ export function P({ children }: { children: ReactNode }) {
  * changes.
  *
  * Product posts (with `cta`): from xl the product card and subscribe box move into a sticky rail
- * on the right. From 2xl the side columns share the leftover width equally, so the prose sits
- * mid-page and the card lines up with the right edge of the header.
+ * on the right.
  *
  *   lg   | toc | prose |              xl   | toc | prose | cta |
  *        |     | cta   |
@@ -55,8 +54,8 @@ export function PostShell({
 }) {
   const report = !cta;
   const grid = report
-    ? "lg:grid-cols-[11rem_minmax(0,1fr)] lg:gap-x-16 xl:grid-cols-[12rem_minmax(0,1fr)] 2xl:gap-x-20"
-    : "lg:grid-cols-[11rem_minmax(0,40rem)] lg:gap-x-16 xl:grid-cols-[10rem_minmax(0,38rem)_minmax(17rem,1fr)] xl:gap-x-10 2xl:grid-cols-[minmax(12rem,1fr)_minmax(0,44rem)_minmax(18rem,1fr)] 2xl:gap-x-16";
+    ? "lg:grid-cols-[10rem_minmax(0,1fr)] lg:gap-x-12"
+    : "lg:grid-cols-[10rem_minmax(0,40rem)] lg:gap-x-12 xl:grid-cols-[9rem_minmax(0,36rem)_minmax(16rem,1fr)] xl:gap-x-10";
 
   return (
     <article className={`${frame} pb-20 pt-8 sm:pb-28 sm:pt-12 lg:pb-36 lg:pt-16`}>
@@ -70,7 +69,7 @@ export function PostShell({
           <time dateTime={post.date}>{formatDate(post.date)}</time>
           {kicker && <span className="rounded-full bg-[var(--mint)] px-2.5 py-0.5 font-semibold text-[var(--pandan)]">{kicker}</span>}
         </p>
-        <h1 className="mt-3 max-w-[22ch] text-balance text-[clamp(2.25rem,9vw,2.5rem)] font-medium leading-[1.08] tracking-[-0.03em] sm:text-[3.25rem] xl:text-[4rem] 2xl:text-[4.5rem]">
+        <h1 className="mt-3 max-w-[22ch] text-balance text-[clamp(2.25rem,9vw,2.5rem)] font-medium leading-[1.08] tracking-[-0.03em] sm:text-[3.25rem] xl:text-[4rem]">
           {post.title}
         </h1>
         {post.author && <p className="mt-4 font-medium text-[var(--tinta)] lg:mt-5">By {post.author}</p>}
@@ -104,10 +103,10 @@ export function PostShell({
         {cta ? (
           <aside
             aria-label="Take part"
-            className="mt-12 lg:col-start-2 lg:row-start-3 xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:mt-0 2xl:w-full 2xl:max-w-[26rem] 2xl:justify-self-end"
+            className="mt-12 lg:col-start-2 lg:row-start-3 xl:col-start-3 xl:row-span-2 xl:row-start-1 xl:mt-0"
           >
             <div className="xl:sticky xl:top-10">
-              <div className="flex flex-col gap-6 rounded-3xl bg-[var(--mint)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8 xl:flex-col xl:items-stretch xl:p-7">
+              <div className="flex flex-col gap-6 rounded-3xl bg-[var(--mint)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8 xl:flex-col xl:items-stretch xl:p-6">
                 <a href={cta.home} className={`self-start whitespace-nowrap rounded-sm sm:self-center xl:self-start ${focusRing}`}>
                   <ProductLockup product={cta.product} />
                 </a>
