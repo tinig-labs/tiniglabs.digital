@@ -46,7 +46,9 @@ const POST_JSON_LD = {
   url: `${SITE_URL}${url}`,
   mainEntityOfPage: `${SITE_URL}${url}`,
   image: `${SITE_URL}${url}opengraph-image`,
-  author: { "@id": ORGANIZATION["@id"] },
+  author: post.author
+    ? { "@type": "Person", name: post.author, affiliation: { "@id": ORGANIZATION["@id"] } }
+    : { "@id": ORGANIZATION["@id"] },
   publisher: { "@id": ORGANIZATION["@id"] },
   isPartOf: { "@type": "Blog", name: "talâ", url: `${SITE_URL}/blog/` },
   citation: [
@@ -145,6 +147,7 @@ export default function ZeroShotTorgoPost() {
         <h1 className="mt-2 text-balance text-[clamp(2.25rem,9vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
           {post.title}
         </h1>
+        {post.author && <p className="mt-4 font-medium text-[var(--tinta)]">By {post.author}</p>}
         <p className="mt-6 text-xl leading-relaxed text-[var(--abo)]">
           Can a voice clone of someone with dysarthria speak Tagalog and still sound like them,
           dysarthria included? <Brand /> tested it on three English speakers from the TORGO dataset.
