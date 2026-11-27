@@ -217,7 +217,7 @@ function Download({ href, label, children }: { href: string; label: string; chil
 
 export default function BrandPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl flex-1 px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
+    <main className="mx-auto w-full max-w-[128rem] flex-1 px-5 pb-20 pt-8 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 sm:pt-12 lg:pb-40 lg:pt-20">
       <style>{`html { scroll-behavior: smooth; } @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }`}</style>
 
       {/* Intro */}

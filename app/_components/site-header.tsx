@@ -69,7 +69,7 @@ export function SiteHeader() {
     <header ref={headerRef} className="sticky top-0 z-50 w-full sm:static">
       {/* Blur sits on its own layer: backdrop-filter on the header would trap the fixed menu sheet inside it */}
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[var(--gatas)]/90 backdrop-blur-md sm:hidden" />
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-5 py-3.5 sm:px-10 sm:py-6">
+      <div className="mx-auto flex w-full max-w-[128rem] items-center justify-between gap-4 px-5 py-3.5 sm:px-10 lg:px-16 2xl:px-24 sm:py-6">
         <Link href="/" aria-label="tinig labs home" onClick={close} className={`rounded-sm ${focusRing}`}>
           <Wordmark />
         </Link>

@@ -37,3 +37,15 @@
   .tl-burger > span { transition: none; }
   .tl-sheet, .tl-sheet-item { animation: none; }
 }
+
+/* Big screens: from 1536 px the root size grows with the viewport (16 px at 1536, about 17 px
+   at 1920, 19 px at 2560, capped at 150%), so type, spacing and rem-based columns scale with
+   the screen instead of leaving the extra width empty. Percentages keep the reader's own
+   browser font size as the base. */
+@media (min-width: 96rem) {
+  html { font-size: clamp(100%, calc(0.3125vw + 70%), 150%); }
+}
+
+/* Long posts: running text keeps a readable measure (about 70 characters) while figures marked
+   .post-wide use the full width of the post column */
+.post-measure > :not(.post-wide) { max-width: 44rem; }

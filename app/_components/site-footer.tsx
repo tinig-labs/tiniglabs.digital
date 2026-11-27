@@ -51,7 +51,7 @@ export function SiteFooter({ current, links, compact = false }: { current: Proje
   const home = FAMILY.find((p) => p.id === current)!.home;
   return (
     <footer
-      className={`mx-auto w-full max-w-6xl px-5 sm:px-10 sm:pb-12 sm:pt-16 ${
+      className={`mx-auto w-full max-w-[128rem] px-5 sm:px-10 lg:px-16 2xl:px-24 sm:pb-12 sm:pt-16 ${
         compact ? "pb-8 pt-10" : "pb-[max(2.5rem,env(safe-area-inset-bottom))] pt-14"
       }`}
     >

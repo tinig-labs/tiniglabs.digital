@@ -63,10 +63,10 @@ export default function Home() {
       {/* Hero */}
       <section
         id="top"
-        className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-20 pt-8 sm:gap-16 sm:px-10 sm:pb-28 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-40 lg:pt-24"
+        className="mx-auto grid max-w-[128rem] items-center gap-12 px-5 pb-20 pt-8 sm:gap-16 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 sm:pt-16 lg:grid-cols-[1.1fr_1fr] lg:gap-20 lg:pb-40 lg:pt-24"
       >
         <div>
-          <h1 className="max-w-[14ch] text-balance text-[clamp(2.5rem,11vw,3rem)] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem]">
+          <h1 className="max-w-[14ch] text-balance text-[clamp(2.5rem,11vw,3rem)] font-medium leading-[1.05] tracking-[-0.035em] sm:text-[4.5rem] xl:text-[5.25rem] 2xl:text-[6rem]">
             An independent lab for open Filipino AI.
           </h1>
           <p className="mt-6 max-w-[40ch] text-lg leading-relaxed sm:mt-8 text-[var(--abo)] sm:text-xl">
@@ -101,19 +101,19 @@ export default function Home() {
       </section>
 
       {/* Why */}
-      <section className="mx-auto max-w-6xl px-5 pb-20 sm:px-10 sm:pb-28 lg:pb-40">
-        <p className="max-w-[24ch] text-[1.75rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.75rem]">
+      <section className="mx-auto grid max-w-[128rem] px-5 pb-20 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:items-end lg:gap-20 lg:pb-40">
+        <p className="max-w-[24ch] text-[1.75rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.75rem] xl:text-[3.25rem]">
           Most speech AI is trained on clear, standard English. Speech after a stroke, with a cleft
           palate, or in therapy gets treated as noise.
         </p>
-        <p className="mt-6 max-w-[48ch] text-lg sm:mt-8 leading-relaxed text-[var(--abo)]">
+        <p className="mt-6 max-w-[48ch] text-lg sm:mt-8 leading-relaxed text-[var(--abo)] lg:mt-0 lg:pb-2 xl:text-xl">
           Our first project builds what Filipino clinicians and developers are missing, in the
           open. Tagalog first, then Cebuano, Ilocano, and Hiligaynon.
         </p>
       </section>
 
       {/* What we're building */}
-      <section id="building" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
+      <section id="building" className="mx-auto max-w-[128rem] scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">What we release</h2>
         <div className="mt-8 grid gap-4 sm:mt-12 md:grid-cols-3 md:gap-6">
           {BUILDING.map((b) => (
@@ -136,7 +136,7 @@ export default function Home() {
       </section>
 
       {/* Roadmap */}
-      <section id="roadmap" className="mx-auto max-w-6xl scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 sm:pb-28 lg:pb-40">
+      <section id="roadmap" className="mx-auto max-w-[128rem] scroll-mt-24 px-5 pb-20 sm:scroll-mt-6 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 lg:pb-40">
         <h2 className="text-2xl font-semibold tracking-tight">Where the speech project is</h2>
         <ol className="mt-8 grid sm:mt-12 md:grid-cols-4 md:gap-8">
           {ROADMAP.map((s, i) => {
@@ -173,7 +173,7 @@ export default function Home() {
 
       {/* Waitlist */}
       <section id="waitlist" className="scroll-mt-18 bg-[var(--pandan)] text-[var(--gatas)] sm:scroll-mt-6">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-20 sm:gap-14 sm:px-10 sm:py-28 lg:grid-cols-2 lg:gap-20 lg:py-32">
+        <div className="mx-auto grid max-w-[128rem] items-center gap-10 px-5 py-20 sm:gap-14 sm:px-10 lg:px-16 2xl:px-24 sm:py-28 lg:grid-cols-2 lg:gap-20 lg:py-32">
           <div>
             <LogoMark size={48} variant="reversed" />
             <h2 className="mt-8 max-w-[14ch] text-[clamp(2.25rem,10vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">

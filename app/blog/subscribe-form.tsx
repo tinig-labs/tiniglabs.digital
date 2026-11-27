@@ -67,12 +67,12 @@ export function SubscribeForm() {
   const submitting = status === "submitting";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative">
+    <form onSubmit={onSubmit} noValidate className="@container relative">
       <HoneypotField />
       <label htmlFor={emailId} className="block text-sm font-medium text-[var(--abo)]">
         Get new posts by email
       </label>
-      <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+      <div className="mt-2 flex flex-col gap-3 @sm:flex-row">
         <input
           id={emailId}
           type="email"
@@ -88,7 +88,7 @@ export function SubscribeForm() {
           aria-describedby={error ? `${emailId}-err` : undefined}
           disabled={submitting}
           className={[
-            "h-14 w-full min-w-0 rounded-full sm:flex-1 border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
+            "h-14 w-full min-w-0 rounded-full @sm:flex-1 border bg-white px-5 text-base text-[var(--tinta)] placeholder:text-[var(--abo)]/60",
             "focus:border-[var(--pandan)] focus:outline-none focus:ring-4 focus:ring-[var(--pandan)]/15 disabled:opacity-60",
             error ? "border-[#B4234A]" : "border-[var(--tinta)]/10",
           ].join(" ")}

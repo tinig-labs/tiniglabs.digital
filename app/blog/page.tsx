@@ -32,11 +32,11 @@ export default function BlogPage() {
         }
       `}</style>
 
-      <section className="mx-auto max-w-6xl px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pb-36 lg:pt-20">
+      <section className="mx-auto max-w-[128rem] px-5 pb-20 pt-8 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 sm:pt-12 lg:pb-36 lg:pt-20">
         <TalaWord />
       </section>
 
-      <section className="mx-auto grid max-w-6xl gap-14 px-5 pb-20 sm:gap-16 sm:px-10 sm:pb-28 lg:grid-cols-2 lg:gap-24 lg:pb-40">
+      <section className="mx-auto grid max-w-[128rem] gap-14 px-5 pb-20 sm:gap-16 sm:px-10 lg:px-16 2xl:px-24 sm:pb-28 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20 lg:pb-40 xl:gap-28">
         <div>
           <p className="max-w-[20ch] text-[1.75rem] font-medium leading-[1.2] tracking-[-0.02em] sm:text-[2.5rem]">
             Same spelling, two words. We named the blog after the note.
@@ -54,18 +54,23 @@ export default function BlogPage() {
           <h2 className="text-lg font-semibold">Posts</h2>
           <ul className="mt-6 border-t border-[var(--tinta)]/10">
             {POSTS.map((p) => (
-              <li key={p.slug} className="border-b border-[var(--tinta)]/10 py-8">
-                <p className="flex items-center gap-3 text-sm font-medium text-[var(--abo)]">
+              <li
+                key={p.slug}
+                className="border-b border-[var(--tinta)]/10 py-8 xl:grid xl:grid-cols-[10rem_minmax(0,1fr)] xl:gap-x-8 xl:py-10"
+              >
+                <p className="flex items-center gap-3 text-sm font-medium text-[var(--abo)] xl:items-start xl:flex-col xl:gap-2 xl:pt-1.5">
                   {p.product && <ProductMark product={p.product} />}
                   <time dateTime={p.date}>{formatDate(p.date)}</time>
                 </p>
-                <Link
-                  href={`/blog/${p.slug}`}
-                  className={`mt-2 block rounded-sm text-2xl font-medium tracking-[-0.01em] hover:text-[var(--pandan)] ${focusRing}`}
-                >
-                  {p.title}
-                </Link>
-                <p className="mt-2 max-w-[42ch] leading-relaxed text-[var(--abo)]">{p.summary}</p>
+                <div>
+                  <Link
+                    href={`/blog/${p.slug}`}
+                    className={`mt-2 block rounded-sm text-2xl font-medium tracking-[-0.01em] hover:text-[var(--pandan)] xl:mt-0 xl:text-[1.75rem] xl:leading-tight ${focusRing}`}
+                  >
+                    {p.title}
+                  </Link>
+                  <p className="mt-2 max-w-[60ch] leading-relaxed text-[var(--abo)] xl:mt-3 xl:text-lg">{p.summary}</p>
+                </div>
               </li>
             ))}
           </ul>
