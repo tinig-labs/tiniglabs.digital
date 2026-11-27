@@ -185,7 +185,10 @@ export function TransferChart({ transfer, speaker, condition }: { transfer: Tran
   const id = `transfer-${speaker}-${condition}`;
 
   return (
-    <figure className="post-wide mt-6 max-w-[56rem]">
+    <figure className="post-wide mt-8 max-w-[56rem]">
+      <p className="mb-3 font-semibold text-[var(--tinta)]">
+        {SPEAKER_LABEL[speaker]} <span className="font-medium text-[var(--abo)]">· {CONDITION_LABEL[condition]} clones vs the control&apos;s</span>
+      </p>
       <svg viewBox={`0 0 ${labelW + plotW + 50} ${h}`} className="h-auto w-full" role="img" aria-labelledby={id}>
         <title id={id}>
           {`Transfer ratio for each dysarthria marker, ${SPEAKER_LABEL[speaker]}, ${CONDITION_LABEL[condition]} clones, by variant. 1 means the clone kept the difference from the control speaker; 0 means it lost it.`}
@@ -246,7 +249,7 @@ export function TransferChart({ transfer, speaker, condition }: { transfer: Tran
           {skipped.length > 0 && (
             <>
               {" "}Not shown: {skipped.map((m) => m.label.toLowerCase()).join(", ")}. The real speakers barely
-              differ on these (|d| &lt; 0.5), so a ratio would mean nothing.
+              differ on {skipped.length === 1 ? "this" : "these"} (|d| &lt; 0.5), so a ratio would mean nothing.
             </>
           )}
         </span>
