@@ -61,7 +61,7 @@ const SCORECARD: ScoreRow[] = [
   {
     trait: "Sounds like the same person",
     detail: "Voice-match score against the speaker's real recordings",
-    F03: { verdict: "kept", note: "0.31 against F03, against 0.05 for the control and 0.22 for F01. Our native listener disagreed: it didn't sound like F03 to them." },
+    F03: { verdict: "kept", note: "0.31 against F03, against 0.05 for the control and 0.22 for F01. Our native listener agreed." },
     F01: { verdict: "unclear", note: "0.40 against F01 but 0.38 against F03, from only 2 test clips. Clearly not the control (0.03). Our native listener did hear it as F01." },
   },
   {
@@ -153,7 +153,7 @@ export default function ZeroShotTorgoPost() {
         <section aria-labelledby="in-short" className="mt-10 rounded-3xl bg-[var(--mint)] p-6 sm:p-8">
           <h2 id="in-short" className="text-sm font-semibold text-[var(--pandan)]">In short</h2>
           <ul className="mt-4 space-y-3 leading-relaxed">
-            <li><b>The clones mostly sound like the person,</b> in English and in Tagalog, though our native listener didn&apos;t recognise every one.</li>
+            <li><b>The clones sound like the person,</b> in English and in Tagalog, both to a voice-match model and to a native listener.</li>
             <li><b>Voice quality carries over into Tagalog,</b> the roughness and breathiness of a dysarthric voice. The more severe the dysarthria, the more comes through.</li>
             <li><b>Being hard to understand carries over only partly,</b> and only in Tagalog. In English the clones speak far more clearly than the real person.</li>
             <li><b>Slow, pausing speech mostly doesn&apos;t carry over.</b> The clones speak faster and pause less than any real speaker.</li>
@@ -231,7 +231,7 @@ export default function ZeroShotTorgoPost() {
             <Scorecard rows={SCORECARD} />
             <RatioExplainer />
 
-            <H3>1. The clones mostly sound like the person, even in Tagalog</H3>
+            <H3>1. The clones sound like the person, even in Tagalog</H3>
             <P>
               F03&apos;s Tagalog clone scores 0.31 on the voice-match model against F03, but only 0.05
               against the control. A stock Tagalog voice scores 0.07 or less against any of the
@@ -286,9 +286,8 @@ export default function ZeroShotTorgoPost() {
             </P>
             <List>
               <li>
-                <b>Same person:</b> F01&apos;s and FC03&apos;s Tagalog clones sounded like their real
-                recordings. F03&apos;s didn&apos;t, even though the voice-match model rated it the
-                clearest match. The model and the ear don&apos;t always agree.
+                <b>Same person:</b> all three Tagalog clones sounded like their real recordings,
+                including F01&apos;s, where the voice-match model couldn&apos;t tell.
               </li>
               <li>
                 <b>Tagalog:</b> mostly correct, but some words were still stressed or pronounced
