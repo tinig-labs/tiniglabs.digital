@@ -164,10 +164,15 @@ export default function ZeroShotTorgoPost() {
 
         <H3>2. Reference audio</H3>
         <P>
-          For each speaker we trim silences, match loudness, and join one to two minutes of
-          sentences into a single reference clip. A separate set of sentences is held back and
-          never used for cloning. Those held-back recordings are what we measure the clones
-          against.
+          For each speaker we trim silences, match loudness, and join about two minutes of
+          sentences into a single reference clip: 25 sentences from F03 and 27 from FC03, all from
+          the head-worn microphone. We keep TORGO&apos;s 16 kHz sampling rate, since upsampling
+          adds nothing.
+        </P>
+        <P>
+          A separate set of 12 sentences is held back and never used for cloning. Both speakers
+          read the same 12, so the real recordings compare like for like. Those held-back
+          recordings are what we measure the clones against.
         </P>
 
         <H3>3. Cloning</H3>
@@ -179,15 +184,16 @@ export default function ZeroShotTorgoPost() {
 
         <H3>4. Tagalog prompts</H3>
         <P>
-          Each clone reads about 20 Tagalog sentences. Half translate TORGO&apos;s own English
-          sentences, so the content matches across languages. The other half cover sounds English
-          doesn&apos;t stress, like the glottal stop and word-initial <i>ng</i>. A native speaker
-          checks every sentence before we generate anything.
+          Each clone reads 22 Tagalog sentences. Twelve translate the held-back English sentences,
+          so the content matches across languages. The other ten cover sounds English doesn&apos;t
+          stress, like the glottal stop in <i>mag-aral</i>, word-initial <i>ng</i> in{" "}
+          <i>ngumiti</i>, and long affixed words like <i>pakikipagkapwa-tao</i>. A native
+          speaker checks every sentence before we generate anything.
         </P>
         <P>
           We generate with two ElevenLabs models, <code>eleven_v3</code> and{" "}
-          <code>eleven_multilingual_v2</code>, and add a stock Tagalog voice reading the same lines
-          as a baseline. Each clone also reads the held-back English sentences, which repeats the
+          <code>eleven_multilingual_v2</code>. A stock Tagalog voice from the ElevenLabs library,
+          labelled with a standard Filipino accent, reads the same lines as a baseline. Each clone also reads the held-back English sentences, which repeats the
           original study.
         </P>
 

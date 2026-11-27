@@ -5,8 +5,8 @@ export type Phase = { label: string; done: boolean };
 
 export const PHASES: Phase[] = [
   { label: "Read the study and plan the replication", done: true },
-  { label: "Download TORGO and pick two speakers", done: false },
-  { label: "Build reference and held-out sets", done: false },
+  { label: "Download TORGO and pick two speakers", done: true },
+  { label: "Build reference and held-out sets", done: true },
   { label: "Write Tagalog prompts and have them checked", done: false },
   { label: "Clone both voices and generate speech", done: false },
   { label: "Measure similarity, intelligibility and dysarthria markers", done: false },
@@ -34,6 +34,8 @@ export type Row = {
   pauseRatio: number | null;
   f0sd: number | null;
   hnr: number | null;
+  jitter?: number | null;
+  shimmer?: number | null;
 };
 
 export type Transfer = { marker: string; label: string; real: number; ratios: Record<string, number | null> };

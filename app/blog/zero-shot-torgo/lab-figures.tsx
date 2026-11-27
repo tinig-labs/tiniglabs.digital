@@ -12,6 +12,8 @@ const SPEAKER_LABEL: Record<string, string> = {
   F03: "F03, dysarthria",
   FC03: "FC03, control",
   stock: "Stock voice",
+  "stock-vs-F03": "Stock voice, vs F03",
+  "stock-vs-FC03": "Stock voice, vs FC03",
 };
 
 const base = "/blog/zero-shot-torgo/";
