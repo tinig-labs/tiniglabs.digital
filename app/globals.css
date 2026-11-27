@@ -37,3 +37,7 @@
   .tl-burger > span { transition: none; }
   .tl-sheet, .tl-sheet-item { animation: none; }
 }
+
+/* Long posts: running text keeps a readable measure (about 70 characters) while figures marked
+   .post-wide use the full width of the post column */
+.post-measure > :not(.post-wide) { max-width: 44rem; }

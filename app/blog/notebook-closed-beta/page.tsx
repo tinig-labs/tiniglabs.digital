@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import type { ReactNode } from "react";
-import { Brand, ProductLockup, focusRing } from "../../_components/brand";
-import { buttonBlock, buttonPrimary } from "../../_components/ui";
+import { Brand, focusRing } from "../../_components/brand";
 import { CORPUS_URL, NOTEBOOK_URL, ORGANIZATION, SITE_URL, jsonLd, pageMetadata } from "../../_components/site";
-import { formatDate, getPost } from "../posts";
-import { SubscribeForm } from "../subscribe-form";
+import { P, type PostSection, PostShell, postLink as link } from "../post-shell";
+import { getPost } from "../posts";
 
 const post = getPost("notebook-closed-beta");
 const url = `/blog/${post.slug}/`;
@@ -62,66 +59,12 @@ const TRANSCRIPT = [
   "The notebook is in closed beta for practising SLPs. Request access at notebook.tiniglabs.digital.",
 ];
 
-const link = `rounded-sm font-medium text-[var(--pandan)] underline underline-offset-4 hover:text-[#185A42] ${focusRing}`;
-
-function H2({ children }: { children: ReactNode }) {
-  return <h2 className="mt-12 text-2xl font-semibold tracking-tight">{children}</h2>;
-}
-
-function P({ children }: { children: ReactNode }) {
-  return <p className="mt-4 text-lg leading-relaxed text-[var(--tinta)]/85">{children}</p>;
-}
-
-export default function NotebookBetaPost() {
-  return (
-    <main className="w-full flex-1">
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(POST_JSON_LD)} />
-      <article className="mx-auto max-w-[42rem] px-5 pb-20 pt-8 sm:px-10 sm:pb-28 sm:pt-12 lg:pt-20">
-        <Link href="/blog" className={`rounded-sm text-sm font-semibold text-[var(--abo)] hover:text-[var(--pandan)] ${focusRing}`}>
-          <span aria-hidden="true">←</span> talâ
-        </Link>
-        <p className="mt-8 text-sm font-medium text-[var(--abo)]">
-          <time dateTime={post.date}>{formatDate(post.date)}</time>
-        </p>
-        <h1 className="mt-2 text-balance text-[clamp(2.25rem,9vw,2.5rem)] font-medium leading-[1.1] tracking-[-0.03em] sm:text-[3.25rem]">
-          {post.title}
-        </h1>
-        <p className="mt-6 text-xl leading-relaxed text-[var(--abo)]">
-          The second thing <Brand /> built is a tool for the clinicians the speech corpus is for.
-          It&apos;s ready for its first users.
-        </p>
-
-        <figure className="mt-10 sm:-mx-6 lg:-mx-16">
-          <video
-            controls
-            playsInline
-            preload="metadata"
-            poster={POSTER}
-            width={1920}
-            height={1080}
-            aria-label="Promo video: a 90-second tour of the tinig labs notebook"
-            className="aspect-video h-auto w-full rounded-2xl bg-[var(--mint)] shadow-[0_1px_2px_rgba(19,38,31,0.06),0_12px_32px_-12px_rgba(19,38,31,0.18)]"
-          >
-            <source src={VIDEO} type="video/mp4" />
-            <a href={VIDEO} className={link}>Download the video</a>
-          </video>
-          <figcaption className="mt-3 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
-            A 90-second tour. Patients and therapists in it are fictional.
-          </figcaption>
-        </figure>
-
-        <details className="group mt-6 rounded-2xl border border-[var(--tinta)]/10 px-5 py-4">
-          <summary className={`cursor-pointer rounded-sm font-semibold text-[var(--tinta)] marker:text-[var(--pandan)] ${focusRing}`}>
-            Read the transcript
-          </summary>
-          <div className="mt-2 space-y-3 pb-1 leading-relaxed text-[var(--tinta)]/80">
-            {TRANSCRIPT.map((line) => (
-              <p key={line}>{line}</p>
-            ))}
-          </div>
-        </details>
-
-        <H2>What it is</H2>
+const SECTIONS: PostSection[] = [
+  {
+    id: "what-it-is",
+    title: "What it is",
+    body: (
+      <>
         <P>
           The notebook at <a href={NOTEBOOK_URL} className={link}>notebook.tiniglabs.digital</a> is
           where speech-language pathologists keep their patients&apos; recordings. You pick a
@@ -133,51 +76,105 @@ export default function NotebookBetaPost() {
           phonological process. You correct the draft in place, and percent consonants correct
           for each target builds up over time.
         </P>
+      </>
+    ),
+  },
+  {
+    id: "private-by-default",
+    title: "Private by default",
+    body: (
+      <P>
+        It installs on Android, iPhone, iPad and computers, works offline, and syncs between
+        devices. Patient data is encrypted on the device before it&apos;s stored or synced,
+        with no passphrase to remember. You can export everything to a ZIP at any time.
+      </P>
+    ),
+  },
+  {
+    id: "why-a-closed-beta",
+    title: "Why a closed beta",
+    body: (
+      <P>
+        A clinical tool has to fit how sessions actually run. We&apos;re starting with a small
+        group of practising SLPs, so their caseloads shape the notebook before anyone else
+        relies on it.
+      </P>
+    ),
+  },
+  {
+    id: "how-to-take-part",
+    title: "How to take part",
+    body: (
+      <P>
+        The beta is for practising SLPs. <a href={REQUEST_URL} className={link}>Request access</a>{" "}
+        on the notebook&apos;s home page, and you&apos;ll get an email once you&apos;re approved.
+      </P>
+    ),
+  },
+  {
+    id: "how-it-fits",
+    title: "How it fits",
+    body: (
+      <P>
+        The notebook is separate from the{" "}
+        <a href={CORPUS_URL} className={link}>speech corpus</a>, which is still recording in its
+        own closed beta. The corpus builds open data and models. The notebook puts that kind of
+        model to work for clinicians today.
+      </P>
+    ),
+  },
+];
 
-        <H2>Private by default</H2>
-        <P>
-          It installs on Android, iPhone, iPad and computers, works offline, and syncs between
-          devices. Patient data is encrypted on the device before it&apos;s stored or synced,
-          with no passphrase to remember. You can export everything to a ZIP at any time.
-        </P>
+const MEDIA = (
+  <>
+    <figure>
+      <video
+        controls
+        playsInline
+        preload="metadata"
+        poster={POSTER}
+        width={1920}
+        height={1080}
+        aria-label="Promo video: a 90-second tour of the tinig labs notebook"
+        className="aspect-video h-auto w-full rounded-2xl bg-[var(--mint)] shadow-[0_1px_2px_rgba(19,38,31,0.06),0_12px_32px_-12px_rgba(19,38,31,0.18)]"
+      >
+        <source src={VIDEO} type="video/mp4" />
+        <a href={VIDEO} className={link}>Download the video</a>
+      </video>
+      <figcaption className="mt-3 px-1 text-sm text-[var(--abo)]">
+        A 90-second tour. Patients and therapists in it are fictional.
+      </figcaption>
+    </figure>
 
-        <H2>Why a closed beta</H2>
-        <P>
-          A clinical tool has to fit how sessions actually run. We&apos;re starting with a small
-          group of practising SLPs, so their caseloads shape the notebook before anyone else
-          relies on it.
-        </P>
+    <details className="group mt-6 rounded-2xl border border-[var(--tinta)]/10 px-5 py-4">
+      <summary className={`cursor-pointer rounded-sm font-semibold text-[var(--tinta)] marker:text-[var(--pandan)] ${focusRing}`}>
+        Read the transcript
+      </summary>
+      <div className="mt-2 max-w-[68ch] space-y-3 pb-1 leading-relaxed text-[var(--tinta)]/80">
+        {TRANSCRIPT.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
+    </details>
+  </>
+);
 
-        <H2>How to take part</H2>
-        <P>
-          The beta is for practising SLPs. <a href={REQUEST_URL} className={link}>Request access</a>{" "}
-          on the notebook&apos;s home page, and you&apos;ll get an email once you&apos;re approved.
-        </P>
-
-        <H2>How it fits</H2>
-        <P>
-          The notebook is separate from the{" "}
-          <a href={CORPUS_URL} className={link}>speech corpus</a>, which is still recording in its
-          own closed beta. The corpus builds open data and models. The notebook puts that kind of
-          model to work for clinicians today.
-        </P>
-
-        <div className="mt-12 flex flex-col gap-6 rounded-3xl bg-[var(--mint)] p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
-          <a href={NOTEBOOK_URL} className={`self-start rounded-sm sm:self-center ${focusRing}`}>
-            <ProductLockup product="notebook" />
-          </a>
-          <a href={REQUEST_URL} className={`${buttonPrimary} ${buttonBlock}`}>
-            Request access
-          </a>
-        </div>
-
-        <div className="mt-16 border-t border-[var(--tinta)]/10 pt-10">
-          <h2 className="text-lg font-semibold">Get new posts by email</h2>
-          <div className="mt-6">
-            <SubscribeForm />
-          </div>
-        </div>
-      </article>
+export default function NotebookBetaPost() {
+  return (
+    <main className="w-full flex-1">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(POST_JSON_LD)} />
+      <PostShell
+        post={post}
+        lede={
+          <>
+            The second thing <Brand /> built is a tool for the clinicians the speech corpus is for.
+            It&apos;s ready for its first users.
+          </>
+        }
+        media={MEDIA}
+        sections={SECTIONS}
+        cta={{ product: "notebook", home: NOTEBOOK_URL, href: REQUEST_URL, label: "Request access" }}
+      />
     </main>
   );
 }

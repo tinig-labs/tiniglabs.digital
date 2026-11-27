@@ -43,9 +43,11 @@ const base = "/blog/zero-shot-torgo/";
 
 /** Real recordings first, then clones, grouped by speaker */
 export function ClipTable({ clips }: { clips: Clip[] }) {
-  const speakers = [...new Set(clips.map((c) => c.speaker))];
+  // The stock voice isn't a speaker: it's the uncloned baseline, so it gets its own strip below
+  const speakers = [...new Set(clips.map((c) => c.speaker))].filter((s) => s !== "stock");
+  const stock = clips.filter((c) => c.speaker === "stock");
   return (
-    <div className="mt-6 space-y-8">
+    <div className="post-wide mt-6 space-y-8 xl:grid xl:grid-cols-3 xl:items-start xl:gap-6 xl:space-y-0">
       {speakers.map((s) => (
         <figure key={s} className="rounded-3xl border border-[var(--tinta)]/10 p-5 sm:p-6">
           <figcaption className="font-semibold">{SPEAKER_LABEL[s] ?? s}</figcaption>
@@ -77,6 +79,32 @@ export function ClipTable({ clips }: { clips: Clip[] }) {
           </ul>
         </figure>
       ))}
+      {stock.length > 0 && (
+        <figure className="rounded-3xl bg-[var(--tinta)]/[0.03] p-5 sm:p-6 xl:col-span-3">
+          <figcaption>
+            <span className="font-semibold">{SPEAKER_LABEL.stock}, for comparison</span>
+            <span className="mt-1 block text-sm leading-relaxed text-[var(--abo)]">
+              A ready-made voice, not cloned from anyone. It shows how the Tagalog sentence sounds
+              without any speaker&apos;s voice in it.
+            </span>
+          </figcaption>
+          <ul className="mt-4 space-y-4">
+            {stock.map((c) => (
+              <li key={c.file} className="gap-x-8 lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(16rem,26rem)] lg:items-center">
+                <div>
+                  <p className="text-sm font-semibold text-[var(--pandan)]">
+                    {CONDITION_LABEL[c.condition]} <span className="font-medium text-[var(--abo)]">· synthetic</span>
+                  </p>
+                  <p className="mt-1 leading-relaxed text-[var(--tinta)]/85">&ldquo;{c.text}&rdquo;</p>
+                </div>
+                <audio controls preload="none" src={`${base}${c.file}`} className="mt-2 w-full lg:mt-0">
+                  <a href={`${base}${c.file}`}>Download the clip</a>
+                </audio>
+              </li>
+            ))}
+          </ul>
+        </figure>
+      )}
     </div>
   );
 }
@@ -89,7 +117,7 @@ function fmt(v: number | null | undefined, digits = 2, pct = false) {
 /** Averages per speaker, variant and condition */
 export function ResultsTable({ rows }: { rows: Row[] }) {
   return (
-    <figure className="mt-8 sm:-mx-6 lg:-mx-16">
+    <figure className="post-wide mt-8 max-w-[72rem]">
       <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
         <table className="w-full min-w-[50rem] text-left text-sm tabular-nums" aria-describedby="results-caption">
           <thead>
@@ -129,7 +157,7 @@ export function ResultsTable({ rows }: { rows: Row[] }) {
           </tbody>
         </table>
       </div>
-      <figcaption id="results-caption" className="mt-3 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
+      <figcaption id="results-caption" className="mt-3 max-w-[44rem] px-1 text-sm text-[var(--abo)]">
         Averages per speaker and audio type. Similarity is cosine similarity to the speaker&apos;s
         held-back real recordings (higher is closer). WER is from Whisper large-v3. Clones read 6
         English and 12 Tagalog sentences. Real rows are TORGO recordings. F01&apos;s real row adds
@@ -157,7 +185,7 @@ export function TransferChart({ transfer, speaker, condition }: { transfer: Tran
   const id = `transfer-${speaker}-${condition}`;
 
   return (
-    <figure className="mt-6 sm:-mx-6 lg:-mx-16">
+    <figure className="post-wide mt-6 max-w-[56rem]">
       <svg viewBox={`0 0 ${labelW + plotW + 50} ${h}`} className="h-auto w-full" role="img" aria-labelledby={id}>
         <title id={id}>
           {`Transfer ratio for each dysarthria marker, ${SPEAKER_LABEL[speaker]}, ${CONDITION_LABEL[condition]} clones, by variant. 1 means the clone kept the difference from the control speaker; 0 means it lost it.`}
@@ -206,7 +234,7 @@ export function TransferChart({ transfer, speaker, condition }: { transfer: Tran
           );
         })}
       </svg>
-      <figcaption className="mt-3 flex flex-wrap gap-x-5 gap-y-2 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
+      <figcaption className="mt-3 flex flex-wrap gap-x-5 gap-y-2 px-1 text-sm text-[var(--abo)]">
         {variants.map((v) => (
           <span key={v} className="inline-flex items-center gap-2">
             <span aria-hidden="true" className="inline-block size-3 rounded-sm" style={{ background: VARIANT_FILL[v] }} />
@@ -286,7 +314,7 @@ export type ScoreRow = { trait: string; detail: string; F03: ScoreCell; F01: Sco
 /** One row per dysarthria trait, one column per dysarthric speaker */
 export function Scorecard({ rows }: { rows: ScoreRow[] }) {
   return (
-    <figure className="mt-6 sm:-mx-6 lg:-mx-16">
+    <figure className="post-wide mt-6 max-w-[64rem]">
       <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
         <table className="w-full min-w-[36rem] text-left">
           <thead>
@@ -314,7 +342,7 @@ export function Scorecard({ rows }: { rows: ScoreRow[] }) {
           </tbody>
         </table>
       </div>
-      <figcaption className="mt-3 px-1 text-sm text-[var(--abo)] sm:px-6 lg:px-16">
+      <figcaption className="mt-3 max-w-[44rem] px-1 text-sm text-[var(--abo)]">
         Tagalog clones, standard setup (default reference, stability 0.5, KWF spelling). Numbers are
         transfer ratios unless stated; see the box below for how to read them.
       </figcaption>
@@ -366,7 +394,7 @@ export type Change = { tried: string; what: string; result: string };
 /** What each change did */
 export function ChangesTable({ rows }: { rows: Change[] }) {
   return (
-    <figure className="mt-6 sm:-mx-6 lg:-mx-16">
+    <figure className="post-wide mt-6 max-w-[64rem]">
       <div className="overflow-x-auto rounded-2xl border border-[var(--tinta)]/10">
         <table className="w-full min-w-[36rem] text-left">
           <thead>
