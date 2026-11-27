@@ -76,7 +76,9 @@ export function PostShell({
         <p className="mt-6 max-w-[52ch] text-xl leading-relaxed text-[var(--abo)] lg:mt-8 xl:text-[1.375rem]">{lede}</p>
       </header>
 
-      <div className={`mt-10 grid sm:mt-12 lg:mt-16 ${grid}`}>
+      {/* minmax(0,1fr) keeps the single phone/tablet column at the screen width; an implicit auto
+          track would grow to fit the widest table and push the whole page sideways */}
+      <div className={`mt-10 grid grid-cols-[minmax(0,1fr)] sm:mt-12 lg:mt-16 ${grid}`}>
         {media && (
           <div className={`mb-12 lg:row-start-1 lg:mb-16 ${report ? "lg:col-start-2" : "lg:col-span-2 lg:col-start-1"}`}>
             {media}
