@@ -8,7 +8,7 @@ export const POSTS: Post[] = [
     slug: "zero-shot-torgo",
     title: "Zero-shot TORGO by tinig labs",
     date: "2026-11-27",
-    summary: "Cloning two TORGO voices, one with dysarthria and one without, into Tagalog, and measuring what survives the change of language.",
+    summary: "Cloning TORGO voices with and without dysarthria into Tagalog, and measuring what survives the change of language.",
   },
   {
     slug: "notebook-closed-beta",
